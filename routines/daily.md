@@ -18,7 +18,7 @@ Hard rules:
    - Exit 4: this date was already posted. Stop and report.
    - Anything else: stop and report the error.
 4. Publish the slides so Metricool can fetch them: `git add posts/DATE && git commit -m "post: slides for DATE" && git push origin main`. If the push is rejected because main moved, `git pull --rebase origin main` and push again. If it still fails, stop and report.
-5. Check every slide link, for N from 1 to the number of slides: `curl -sI https://raw.githubusercontent.com/Bhaveshmeghwal21/aegismind-carousels/main/posts/DATE/slide-N.png`. Each must answer `HTTP/2 200` with `content-type: image/png`. The link can lag a few seconds after a push: retry up to 5 times, 10 seconds apart. If it is still not 200, stop and report. Do not call Metricool.
+5. Check every slide link, for N from 1 to the number of slides: `curl -sI https://raw.githubusercontent.com/Bhaveshmeghwal21/aegismind-carousels/main/posts/DATE/slide-N.png`. Each must answer with a 200 status and `content-type: image/png`. The link can lag a few seconds after a push: retry up to 5 times, 10 seconds apart. If it is still not 200, stop and report. Do not call Metricool.
 6. Duplicate check: call `getScheduledPosts` for `brand_id` for DATE (00:00 to 23:59, timezone from config). If a post with the same caption text already exists, stop and report.
 7. Read the caption for DATE from the `caption:` line of its entry in `ideas/`. Call `createScheduledPost` with:
    - `blogId`: `brand_id` as a string
