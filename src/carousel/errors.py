@@ -1,3 +1,7 @@
+class IdeaParseError(ValueError):
+    """An entry in an ideas file is missing a field or is malformed."""
+
+
 class UnsupportedGlyphError(ValueError):
     """Text contains a character the slide font cannot draw."""
 
