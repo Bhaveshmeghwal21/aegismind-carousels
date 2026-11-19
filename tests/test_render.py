@@ -94,6 +94,13 @@ def test_render_post_writes_the_image_and_the_caption(tmp_path: Path, art_dir: P
     assert "Art: Piece b2," in caption
 
 
+def test_music_choice_is_written_for_the_daily_routine(tmp_path: Path, art_dir: Path):
+    render_post(make_idea(music="Gymnopédie No. 1 — Erik Satie"), tmp_path / "with", art_dir)
+    assert (tmp_path / "with" / "music.txt").read_text(encoding="utf-8").strip() == "Gymnopédie No. 1 — Erik Satie"
+    render_post(make_idea(), tmp_path / "without", art_dir)
+    assert not (tmp_path / "without" / "music.txt").exists()
+
+
 def test_each_day_gets_its_own_art_and_a_rerun_matches(tmp_path: Path, art_dir: Path):
     (a,) = render_post(make_idea("2026-11-23"), tmp_path / "a", art_dir)
     (again,) = render_post(make_idea("2026-11-23"), tmp_path / "again", art_dir)

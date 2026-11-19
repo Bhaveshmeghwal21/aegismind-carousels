@@ -8,6 +8,7 @@ from .errors import ArtNotFoundError, IdeaParseError
 from .ideas import idea_for_date, is_postable, load_ideas
 from .library import DEFAULT_ART_DIR
 from .render import render_post
+from .video import make_reel
 
 EXIT_OK = 0
 EXIT_NOTHING_TO_POST = 3
@@ -56,6 +57,8 @@ def _render(args: argparse.Namespace) -> int:
     except ArtNotFoundError as err:
         print(f"{args.date}: {err}", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
+    if args.reel:
+        paths.append(make_reel(paths[0], out_dir / args.date / "reel.mp4", args.reel))
     print(json.dumps([p.as_posix() for p in paths]))
     return EXIT_OK
 
@@ -74,6 +77,7 @@ def main(argv: list[str] | None = None) -> int:
     render.add_argument("--ideas", default="ideas")
     render.add_argument("--out", default="posts")
     render.add_argument("--art", default=str(DEFAULT_ART_DIR), help="art library folder")
+    render.add_argument("--reel", type=int, default=0, metavar="SECONDS", help="also write reel.mp4: the post held still this long")
     render.set_defaults(func=_render)
 
     mark = sub.add_parser("mark-posted", help="record that a date has been posted or drafted")

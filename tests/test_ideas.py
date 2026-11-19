@@ -43,7 +43,12 @@ def test_parses_a_full_entry():
 
 def test_a_minimal_entry_needs_only_status_quote_and_author():
     (idea,) = parse_ideas(MINIMAL)
-    assert (idea.source, idea.image, idea.caption, idea.tags) == ("", "", "", "")
+    assert (idea.source, idea.image, idea.caption, idea.tags, idea.music) == ("", "", "", "", "")
+
+
+def test_music_line_is_read_with_its_dash_and_accents():
+    (idea,) = parse_ideas(MINIMAL + "music: Gymnopédie No. 1 — Erik Satie\n")
+    assert idea.music == "Gymnopédie No. 1 — Erik Satie"
 
 
 def test_two_entries_parse_in_order():

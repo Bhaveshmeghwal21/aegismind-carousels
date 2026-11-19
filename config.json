@@ -3,5 +3,6 @@
   "timezone": "Asia/Calcutta",
   "post_time": "19:00",
   "publish_mode": "draft",
-  "is_ai_generated": false
+  "is_ai_generated": false,
+  "reel_seconds": 10
 }

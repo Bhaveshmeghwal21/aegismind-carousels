@@ -125,7 +125,7 @@ def render_image(quote: str, author: str, art: Image.Image) -> Image.Image:
 
 
 def render_post(idea: Idea, out_dir: Path, art_dir: Path = DEFAULT_ART_DIR) -> list[Path]:
-    """Write out_dir/post.png and out_dir/caption.txt. The art and grain are seeded by the date,
+    """Write out_dir/post.png and out_dir/caption.txt (and music.txt when the idea names a track). The art and grain are seeded by the date,
     so a rerun gives identical files. Nothing is written if anything fails."""
     library = load_library(art_dir)
     piece = pick_art(library, idea.date, idea.image or None)
@@ -137,4 +137,6 @@ def render_post(idea: Idea, out_dir: Path, art_dir: Path = DEFAULT_ART_DIR) -> l
     path = out_dir / "post.png"
     img.save(path, optimize=True)
     (out_dir / "caption.txt").write_text(caption + "\n", encoding="utf-8")
+    if idea.music:
+        (out_dir / "music.txt").write_text(idea.music + "\n", encoding="utf-8")
     return [path]

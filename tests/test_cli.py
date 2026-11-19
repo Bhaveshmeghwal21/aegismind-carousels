@@ -44,6 +44,17 @@ def test_render_prints_the_post_path_writes_the_caption_and_exits_0(tmp_path, ar
     assert "— Miyamoto Musashi, Dokkōdō (1645)" in caption
 
 
+def test_reel_option_also_writes_a_still_image_video(tmp_path, art_dir, capsys):
+    p = setup(tmp_path, art_dir, entry())
+    code = main(
+        ["render", "--date", "2026-11-23", "--ideas", str(p["ideas"]), "--out", str(p["posts"]), "--art", str(p["art"]), "--reel", "1"]
+    )
+    assert code == 0
+    paths = json.loads(capsys.readouterr().out)
+    assert [Path(x).name for x in paths] == ["post.png", "reel.mp4"]
+    assert all(Path(x).exists() for x in paths)
+
+
 def test_no_entry_for_date_exits_3_and_writes_nothing(tmp_path, art_dir):
     p = setup(tmp_path, art_dir, entry())
     assert render(p, "2026-11-30") == 3

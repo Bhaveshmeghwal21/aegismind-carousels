@@ -45,6 +45,7 @@ def _parse_entry(date: str, block: str, approved: bool) -> Idea:
         image=fields.get("image", ""),
         caption=fields.get("caption", ""),
         tags=fields.get("tags", ""),
+        music=fields.get("music", ""),
     )
 
 

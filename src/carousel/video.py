@@ -1,0 +1,51 @@
+"""Turn the finished post image into a plain Reel: the image held still, nothing else.
+
+Instagram only attaches music to Reels, and a Reel must be a video file, so this is the smallest
+possible video: the unchanged 1080x1350 post centred on a 1080x1920 black frame, with a silent audio track."""
+
+import shutil
+import subprocess
+from pathlib import Path
+
+REEL_SIZE = (1080, 1920)
+IMAGE_TOP = 100  # black bar above the image; the bigger bar below keeps the quote clear of Reels' caption overlay
+FRAME_RATE = 30
+
+
+def find_ffmpeg() -> str:
+    """ffmpeg on the PATH, else the copy bundled with the imageio-ffmpeg package."""
+    found = shutil.which("ffmpeg")
+    if found:
+        return found
+    try:
+        import imageio_ffmpeg
+    except ImportError as err:
+        raise RuntimeError("ffmpeg not found: install ffmpeg, or run: pip install imageio-ffmpeg") from err
+    return imageio_ffmpeg.get_ffmpeg_exe()
+
+
+def make_reel(image_path: Path, out_path: Path, seconds: int) -> Path:
+    """Write an H.264 MP4 of `seconds` seconds. Nothing is left behind if ffmpeg fails."""
+    image_path, out_path = Path(image_path), Path(out_path)
+    if not image_path.exists():
+        raise FileNotFoundError(image_path)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    partial = out_path.with_name(out_path.stem + ".partial.mp4")
+    width, height = REEL_SIZE
+    command = [
+        find_ffmpeg(), "-v", "error", "-y",
+        "-loop", "1", "-framerate", str(FRAME_RATE), "-i", str(image_path),
+        "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
+        "-t", str(seconds),
+        "-vf", f"pad={width}:{height}:0:{IMAGE_TOP}:black,format=yuv420p",
+        "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-r", str(FRAME_RATE),
+        "-c:a", "aac", "-b:a", "64k",
+        "-movflags", "+faststart",
+        str(partial),
+    ]
+    try:
+        subprocess.run(command, check=True, capture_output=True)
+        partial.replace(out_path)
+    finally:
+        partial.unlink(missing_ok=True)
+    return out_path

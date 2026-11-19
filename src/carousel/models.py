@@ -11,3 +11,4 @@ class Idea:
     image: str = ""  # art id from assets/art/index.json; empty means pick one by date
     caption: str = ""  # a line or two of reflection
     tags: str = ""  # hashtags, shown last in the caption
+    music: str = ""  # "Title — Artist" to search for in Instagram's music library; empty means no music
