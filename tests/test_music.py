@@ -43,6 +43,17 @@ def test_credit_names_the_piece_the_composer_the_performer_the_year_and_the_lice
     )
 
 
+def test_credit_for_a_cc_by_track_names_the_author_the_site_the_licence_and_the_edit(music_dir):
+    import json
+
+    index = json.loads((music_dir / "index.json").read_text(encoding="utf-8"))
+    index["tone-a"].update(title="Heroic Age", composer="Kevin MacLeod", license="CC BY 4.0", source="https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100124")
+    (music_dir / "index.json").write_text(json.dumps(index), encoding="utf-8")
+    assert music_credit(load_music(music_dir)["tone-a"]) == (
+        'Music: "Heroic Age" by Kevin MacLeod (incompetech.com), CC BY 4.0. Shortened and faded.'
+    )
+
+
 def duration_seconds(path) -> float:
     info = subprocess.run([find_ffmpeg(), "-hide_banner", "-i", str(path)], capture_output=True, text=True).stderr
     h, m, s = re.search(r"Duration: (\d+):(\d+):([\d.]+)", info).groups()
@@ -53,7 +64,7 @@ def test_real_music_library_is_complete_and_licensed():
     library = load_music(REAL_MUSIC_DIR)
     assert len(library) >= 8
     for piece in library.values():
-        assert piece.license in ("CC0", "Public domain"), piece.id
-        assert piece.source.startswith("https://archive.org/details/"), piece.id
+        assert piece.license in ("CC0", "Public domain", "CC BY 4.0"), piece.id
+        assert piece.source.startswith(("https://archive.org/details/", "https://incompetech.com/")), piece.id
         assert piece.composer.strip() and piece.performer.strip() and piece.year.strip(), piece.id
         assert duration_seconds(REAL_MUSIC_DIR / piece.file) >= piece.start + 15, piece.id

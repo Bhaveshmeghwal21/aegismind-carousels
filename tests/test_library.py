@@ -54,7 +54,20 @@ def test_real_library_is_complete_and_every_picture_opens():
     assert len(library) >= 20
     for piece in library.values():
         assert piece.title.strip() and piece.date.strip(), piece.id
-        assert "CC0" in piece.credit, piece.id
+        assert piece.kind in ("photo", "ink"), piece.id
         assert all(0.0 <= v <= 1.0 for v in piece.focus), piece.id
+        if piece.kind == "photo":
+            assert "CC0" in piece.credit, piece.id
+        else:
+            assert "ink illustration" in piece.credit, piece.id
         with Image.open(REAL_ART_DIR / piece.file) as picture:
-            assert min(picture.size) >= 1000, piece.id
+            assert min(picture.size) >= (1000 if piece.kind == "photo" else 900), piece.id
+
+
+def test_credit_line_for_an_ink_illustration_has_no_artist(art_dir):
+    index = json.loads((art_dir / "index.json").read_text(encoding="utf-8"))
+    index["a1"].update(artist="", date="2026", credit="Original ink illustration, made with AI", kind="ink")
+    (art_dir / "index.json").write_text(json.dumps(index), encoding="utf-8")
+    piece = load_library(art_dir)["a1"]
+    assert piece.kind == "ink" and load_library(art_dir)["b2"].kind == "photo"
+    assert credit_line(piece) == "Art: Piece a1, 2026. Original ink illustration, made with AI"

@@ -22,6 +22,7 @@ class ArtPiece:
     gamma: float  # above 1.0 makes the picture darker
     vignette: tuple[float, float, float, float, float] | None  # (cx, cy, rx, ry, floor) on the 1080x1350 canvas
     crop: tuple[float, float, float, float] | None  # (left, top, right, bottom) fractions to keep
+    kind: str = "photo"  # "photo": a museum picture graded dark; "ink": an original ink illustration on white
 
 
 def load_library(art_dir: Path = DEFAULT_ART_DIR) -> dict[str, ArtPiece]:
@@ -38,6 +39,7 @@ def load_library(art_dir: Path = DEFAULT_ART_DIR) -> dict[str, ArtPiece]:
             gamma=entry.get("gamma", 1.3),
             vignette=tuple(entry["vignette"]) if entry.get("vignette") else None,
             crop=tuple(entry["crop"]) if entry.get("crop") else None,
+            kind=entry.get("kind", "photo"),
         )
         for art_id, entry in raw.items()
     }
@@ -54,5 +56,5 @@ def pick_art(library: dict[str, ArtPiece], date: str, requested: str | None = No
 
 
 def credit_line(piece: ArtPiece) -> str:
-    parts = [piece.title] + ([piece.artist] if piece.artist else []) + [piece.date]
+    parts = [piece.title] + ([piece.artist] if piece.artist else []) + ([piece.date] if piece.date else [])
     return f"Art: {', '.join(parts)}. {piece.credit}"

@@ -8,7 +8,8 @@ import subprocess
 from pathlib import Path
 
 REEL_SIZE = (1080, 1920)
-IMAGE_TOP = 100  # black bar above the image; the bigger bar below keeps the quote clear of Reels' caption overlay
+IMAGE_TOP = 100  # bar above the image; the bigger bar below keeps the quote clear of Reels' caption overlay
+IMAGE_HEIGHT = 1350
 FRAME_RATE = 30
 
 
@@ -24,8 +25,11 @@ def find_ffmpeg() -> str:
     return imageio_ffmpeg.get_ffmpeg_exe()
 
 
-def make_reel(image_path: Path, out_path: Path, seconds: int, audio: Path | None = None, audio_start: float = 0.0) -> Path:
+def make_reel(
+    image_path: Path, out_path: Path, seconds: int, audio: Path | None = None, audio_start: float = 0.0, light: bool = False
+) -> Path:
     """Write an H.264 MP4 of `seconds` seconds with `audio` (from audio_start, faded in and out), or silent.
+    `light` puts a white bar above the image and a black one below it (for the white ink layout) instead of two black bars.
     Nothing is left behind if ffmpeg fails."""
     image_path, out_path = Path(image_path), Path(out_path)
     if not image_path.exists():
@@ -33,6 +37,11 @@ def make_reel(image_path: Path, out_path: Path, seconds: int, audio: Path | None
     out_path.parent.mkdir(parents=True, exist_ok=True)
     partial = out_path.with_name(out_path.stem + ".partial.mp4")
     width, height = REEL_SIZE
+    if light:
+        below = IMAGE_TOP + IMAGE_HEIGHT
+        frame = f"pad={width}:{height}:0:{IMAGE_TOP}:white,drawbox=x=0:y={below}:w={width}:h={height - below}:color=black:t=fill,format=yuv420p"
+    else:
+        frame = f"pad={width}:{height}:0:{IMAGE_TOP}:black,format=yuv420p"
     if audio:
         sound = [
             "-ss", f"{audio_start:.2f}", "-i", str(audio),
@@ -45,7 +54,7 @@ def make_reel(image_path: Path, out_path: Path, seconds: int, audio: Path | None
         "-loop", "1", "-framerate", str(FRAME_RATE), "-i", str(image_path),
         *sound,
         "-t", str(seconds),
-        "-vf", f"pad={width}:{height}:0:{IMAGE_TOP}:black,format=yuv420p",
+        "-vf", frame,
         "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-r", str(FRAME_RATE),
         "-c:a", "aac", "-b:a", "64k",
         "-movflags", "+faststart",

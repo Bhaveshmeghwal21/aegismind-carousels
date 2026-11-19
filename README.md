@@ -1,11 +1,11 @@
 # aegismind-carousels
 
-Content and tooling for the Instagram account @theaegismind: dark, moody single-image posts. Each post is a quote by a real thinker (Marcus Aurelius, Seneca, Buddha, Musashi, Osho, Socrates and so on) in white serif type over black-and-white art, with the thinker's name under it. The repo name says carousels because that was the first plan; for now every post is one picture.
+Content and tooling for the Instagram account @theaegismind: black-and-white manga-ink posts. Each post is a quote by a real thinker (Marcus Aurelius, Seneca, Buddha, Musashi, Osho, Socrates and so on) in a heavy serif at the top of a white page, with the thinker and the work under it and an original ink illustration below. The repo name says carousels because that was the first plan; for now every post is one picture.
 
 ## How it works
 
 - `ideas/YYYY-Www.md`: one file per week, one entry per day. A weekly Claude routine drafts the next week; you edit or add entries on GitHub.
-- `assets/art/`: the art library. Public-domain pictures (Cleveland Museum of Art open access, CC0) with `index.json` saying how to frame and darken each one. Each post uses the entry's `image:` id, or one picked by date.
+- `assets/art/`: the art library. The `ink-*` entries (`"kind": "ink"`) are original black-and-white ink illustrations made with AI (Figma's image generator); they are what posts use now, and because they are AI-made `is_ai_generated` in `config.json` is `true` so Instagram labels the posts. The older entries are public-domain museum photos (Cleveland Museum of Art open access, CC0) that render in the earlier dark photo style. `index.json` has each picture's focus point and credit. Each post uses the entry's `image:` id, or one picked by date.
 - `assets/music/`: the music library. Short clips of public-domain recordings (Bach played by Kimiko Ishizaka under CC0, a Chopin nocturne from 1916, Beethoven's "Moonlight" from 1922, and others) with `index.json` giving each one's licence, source and mood. Each post uses the entry's `music:` id, or one picked by date.
 - `src/carousel/`: the post-maker. `python -m carousel render --date YYYY-MM-DD --reel 10` writes `posts/YYYY-MM-DD/post.png` (1080x1350), `posts/YYYY-MM-DD/reel.mp4` (the same image held still for 10 seconds on a 1080x1920 frame, with the music mixed in) and `posts/YYYY-MM-DD/caption.txt` (quote, source, reflection, art and music credits, hashtags). Instagram only attaches music to Reels, so the music is baked into the video instead of using Instagram's library, which this account cannot reach.
 - A daily Claude routine renders the day's Reel, pushes it here (the repo is public so Instagram can fetch the video) and schedules it through Metricool.
@@ -48,5 +48,9 @@ python -m venv .venv
 .venv/Scripts/python -m pip install -r requirements.txt
 .venv/Scripts/python -m pytest
 ```
+
+To add illustrations: save a 4:3 black-ink-on-white picture (no text in it) as `assets/art/<id>.png` and add an `index.json` entry copied from an `ink-*` one. Prompt idea: `Black ink manga illustration on a plain white background. An original character: ... Strictly pure black and white, no colour, no grey wash, no text, no speech bubbles, no signature, no watermark.` Name no artist, series or character.
+
+Music with `"license": "CC BY 4.0"` (Kevin MacLeod, incompetech.com) needs the credit `music_credit` writes into the caption, so never remove the caption's music line.
 
 The font is EB Garamond (SIL Open Font License 1.1), in `assets/fonts/`. Artwork credits are in `assets/art/index.json` and in every caption.

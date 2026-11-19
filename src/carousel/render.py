@@ -140,8 +140,13 @@ def render_post(
     library = load_library(art_dir)
     piece = pick_art(library, idea.date, idea.image or None)
     track = pick_music(load_music(music_dir), idea.date, idea.music or None) if reel_seconds else None
-    art = grade_art(piece, art_dir, seed=zlib.crc32(idea.date.encode()))
-    img = render_image(idea.quote, idea.author, art)
+    if piece.kind == "ink":
+        from .ink import load_ink_art, render_ink_image  # imported here: ink.py itself imports from this module
+
+        img = render_ink_image(idea.quote, idea.author, idea.source, load_ink_art(piece, art_dir), piece.focus)
+    else:
+        art = grade_art(piece, art_dir, seed=zlib.crc32(idea.date.encode()))
+        img = render_image(idea.quote, idea.author, art)
     caption = build_caption(idea, piece, track)
 
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -150,5 +155,7 @@ def render_post(
     (out_dir / "caption.txt").write_text(caption + "\n", encoding="utf-8")
     paths = [path]
     if track:
-        paths.append(make_reel(path, out_dir / "reel.mp4", reel_seconds, Path(music_dir) / track.file, track.start))
+        paths.append(
+            make_reel(path, out_dir / "reel.mp4", reel_seconds, Path(music_dir) / track.file, track.start, light=piece.kind == "ink")
+        )
     return paths

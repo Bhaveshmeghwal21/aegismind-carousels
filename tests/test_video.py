@@ -74,3 +74,15 @@ def test_missing_image_raises_and_writes_nothing(tmp_path: Path):
     with pytest.raises(FileNotFoundError):
         make_reel(tmp_path / "nope.png", tmp_path / "reel.mp4", seconds=1)
     assert not (tmp_path / "reel.mp4").exists()
+
+
+def test_light_reel_has_a_white_bar_above_and_a_black_bar_below(tmp_path: Path, post: Path):
+    out = make_reel(post, tmp_path / "reel.mp4", seconds=2, light=True)
+    frame = tmp_path / "frame.png"
+    subprocess.run(
+        [find_ffmpeg(), "-v", "error", "-y", "-ss", "1", "-i", str(out), "-frames:v", "1", str(frame)], check=True
+    )
+    img = Image.open(frame).convert("L")
+    assert img.getpixel((540, 20)) > 230  # white bar above the image
+    assert 105 <= img.getpixel((540, 900)) <= 135  # the image itself, unchanged
+    assert img.getpixel((540, 1850)) < 25  # black bar below it

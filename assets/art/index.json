@@ -452,5 +452,80 @@
   ],
   "crop": null,
   "url": "https://clevelandart.org/art/1915.334.1"
+ },
+ "ink-samurai": {
+  "title": "Wandering swordsman",
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "file": "ink-samurai.png",
+  "focus": [
+   0.5,
+   0.45
+  ],
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-emperor": {
+  "title": "Laurelled statesman",
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "file": "ink-emperor.png",
+  "focus": [
+   0.5,
+   0.4
+  ],
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-monk": {
+  "title": "Monk in meditation",
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "file": "ink-monk.png",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-thinker": {
+  "title": "Barefoot thinker in the marketplace",
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "file": "ink-thinker.png",
+  "focus": [
+   0.5,
+   0.45
+  ],
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-cliff": {
+  "title": "Traveller on the cliff edge",
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "file": "ink-cliff.png",
+  "focus": [
+   0.45,
+   0.45
+  ],
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }

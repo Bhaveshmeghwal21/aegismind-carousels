@@ -4,6 +4,7 @@ import json
 import zlib
 from dataclasses import dataclass
 from pathlib import Path
+from urllib.parse import urlparse
 
 from .errors import MusicNotFoundError
 
@@ -17,7 +18,7 @@ class MusicPiece:
     composer: str
     performer: str
     year: str  # when the recording was made or released
-    license: str  # "CC0" or "Public domain"
+    license: str  # "CC0", "Public domain" or "CC BY 4.0" (needs the credit music_credit writes)
     source: str  # where the recording was found (and its licence can be checked)
     file: str  # clip file name inside the music directory
     start: float  # seconds into the clip where playback begins
@@ -52,4 +53,8 @@ def pick_music(library: dict[str, MusicPiece], date: str, requested: str | None 
 
 
 def music_credit(piece: MusicPiece) -> str:
+    if piece.license.upper().startswith("CC BY"):
+        # Creative Commons attribution: title, author, where to find it, the licence, and a note that it was edited
+        site = urlparse(piece.source).netloc.removeprefix("www.")
+        return f'Music: "{piece.title}" by {piece.composer} ({site}), {piece.license}. Shortened and faded.'
     return f"Music: {piece.title}, {piece.composer}, performed by {piece.performer}, {piece.year}. {piece.license}"
