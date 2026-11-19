@@ -29,22 +29,18 @@ def setup(tmp_path: Path, *entries: str) -> dict[str, Path]:
     ideas = tmp_path / "ideas"
     ideas.mkdir()
     (ideas / "2026-W48.md").write_text("\n".join(entries), encoding="utf-8")
-    config = tmp_path / "config.json"
-    config.write_text(json.dumps({"closing_line": "Follow for more."}), encoding="utf-8")
-    return {"ideas": ideas, "posts": tmp_path / "posts", "config": config}
+    return {"ideas": ideas, "posts": tmp_path / "posts"}
 
 
 def render(p: dict[str, Path], date: str) -> int:
-    return main(
-        ["render", "--date", date, "--ideas", str(p["ideas"]), "--out", str(p["posts"]), "--config", str(p["config"])]
-    )
+    return main(["render", "--date", date, "--ideas", str(p["ideas"]), "--out", str(p["posts"])])
 
 
-def test_render_prints_slide_paths_and_exits_0(tmp_path, capsys):
+def test_render_prints_the_post_path_and_exits_0(tmp_path, capsys):
     p = setup(tmp_path, entry())
     assert render(p, "2026-11-23") == 0
     paths = json.loads(capsys.readouterr().out)
-    assert [Path(x).name for x in paths] == [f"slide-{i}.png" for i in range(1, 8)]
+    assert [Path(x).name for x in paths] == ["post.png"]
     assert all(Path(x).exists() for x in paths)
 
 
@@ -74,10 +70,10 @@ def test_malformed_entry_for_another_day_does_not_block_today(tmp_path):
 def test_already_posted_exits_4_and_renders_nothing(tmp_path):
     p = setup(tmp_path, entry())
     assert render(p, "2026-11-23") == 0
-    (p["posts"] / "2026-11-23" / "slide-1.png").unlink()
+    (p["posts"] / "2026-11-23" / "post.png").unlink()
     mark_posted(p["posts"], "2026-11-23", "draft", "https://example.test/post/1")
     assert render(p, "2026-11-23") == 4
-    assert not (p["posts"] / "2026-11-23" / "slide-1.png").exists()
+    assert not (p["posts"] / "2026-11-23" / "post.png").exists()
 
 
 def test_mark_posted_writes_marker_that_already_posted_sees(tmp_path):

@@ -6,12 +6,11 @@ from pathlib import Path
 
 from .errors import IdeaParseError
 from .ideas import idea_for_date, is_postable, load_ideas
-from .render import render_carousel
+from .render import render_post
 
 EXIT_OK = 0
 EXIT_NOTHING_TO_POST = 3
 EXIT_ALREADY_POSTED = 4
-DEFAULT_CLOSING_LINE = "Follow for more."
 
 
 def already_posted(posts_dir: Path, date: str) -> bool:
@@ -31,12 +30,6 @@ def mark_posted(posts_dir: Path, date: str, mode: str, planner_url: str) -> Path
     return path
 
 
-def _closing_line(config_path: Path) -> str:
-    if not config_path.exists():
-        return DEFAULT_CLOSING_LINE
-    return json.loads(config_path.read_text(encoding="utf-8")).get("closing_line", DEFAULT_CLOSING_LINE)
-
-
 def _render(args: argparse.Namespace) -> int:
     out_dir = Path(args.out)
     if already_posted(out_dir, args.date):
@@ -52,9 +45,9 @@ def _render(args: argparse.Namespace) -> int:
         print(f"{args.date}: no idea found for this date", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
     if not is_postable(idea):
-        print(f"{args.date}: idea is not postable (status {idea.status!r}, {len(idea.slides)} slides)", file=sys.stderr)
+        print(f"{args.date}: idea is not postable (status {idea.status!r})", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
-    paths = render_carousel(idea, out_dir / args.date, _closing_line(Path(args.config)))
+    paths = render_post(idea, out_dir / args.date)
     print(json.dumps([p.as_posix() for p in paths]))
     return EXIT_OK
 
@@ -68,11 +61,10 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="carousel")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    render = sub.add_parser("render", help="render the carousel for a date")
+    render = sub.add_parser("render", help="render the post image for a date")
     render.add_argument("--date", required=True, help="YYYY-MM-DD")
     render.add_argument("--ideas", default="ideas")
     render.add_argument("--out", default="posts")
-    render.add_argument("--config", default="config.json")
     render.set_defaults(func=_render)
 
     mark = sub.add_parser("mark-posted", help="record that a date has been posted or drafted")

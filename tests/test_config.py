@@ -12,4 +12,3 @@ def test_config_has_the_values_the_daily_routine_reads():
     assert re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", config["post_time"])
     assert config["publish_mode"] in ("draft", "auto")
     assert isinstance(config["is_ai_generated"], bool)
-    assert config["closing_line"].strip()

@@ -1,71 +1,94 @@
+from pathlib import Path
+
 import pytest
-from PIL import Image
+from PIL import Image, ImageChops, ImageDraw, ImageStat
 
 from carousel.errors import TextOverflowError, UnsupportedGlyphError
-from carousel.models import Idea, Slide
-from carousel.render import render_carousel, render_slide
+from carousel.models import Idea
+from carousel.render import fit_hook, render_image, render_post
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-RED = (230, 0, 0)
-
-
-def colours(img: Image.Image) -> set[tuple[int, int, int]]:
-    return {c for _, c in img.convert("RGB").getcolors(maxcolors=1_500_000)}
+HOOK = "Marcus Aurelius rehearsed bad days every morning"
+TEXT_WHITE = 240
 
 
-def make_idea(n_slides: int = 5) -> Idea:
-    return Idea(
-        date="2026-11-23",
-        status="ready",
-        topic="Stoicism",
-        hook="Seneca rehearsed disaster every morning",
-        slides=[Slide(title=f"Idea {i}", body="Imagine the worst before it comes.") for i in range(n_slides)],
-        caption="A short caption. #stoicism",
-    )
+def tones(img: Image.Image) -> set[tuple[int, int, int]]:
+    return {c for _, c in img.convert("RGB").getcolors(maxcolors=2_000_000)}
 
 
-def test_slide_is_1080x1350():
-    img = render_slide("hook", "Why Stoics expected the worst", "", 1, 7)
-    assert img.size == (1080, 1350)
+def make_idea(date: str = "2026-11-23", hook: str = HOOK) -> Idea:
+    return Idea(date=date, status="ready", topic="Stoicism", hook=hook, caption="A caption. #stoicism")
 
 
-def test_only_black_white_red_family():
-    img = render_slide(
-        "idea", "Premeditatio malorum", "Imagine the worst before it comes, so it cannot ambush you.", 2, 7
-    )
-    found = colours(img)
-    assert all(g == b and r >= g for r, g, b in found)
-    assert RED in found
-    assert WHITE in found
+def test_post_is_1080x1350():
+    assert render_image(HOOK, "Stoicism", seed=1).size == (1080, 1350)
 
 
-def test_long_text_never_overflows_margins():
-    img = render_slide("idea", "A long title that keeps going and going", "word " * 80, 2, 7).convert("RGB")
-    left = img.crop((0, 0, 60, 1350))
-    right = img.crop((1020, 0, 1080, 1350))
-    assert colours(left) == {BLACK}
-    assert colours(right) == {BLACK}
+def test_only_black_white_and_grey():
+    found = tones(render_image(HOOK, "Stoicism", seed=1))
+    assert all(r == g == b for r, g, b in found)
+    assert (255, 255, 255) in found
+
+
+def test_post_is_dark_picture_not_flat_black():
+    img = render_image(HOOK, "Stoicism", seed=1)
+    assert ImageStat.Stat(img.convert("L")).mean[0] < 80
+    assert len(tones(img)) >= 60
+
+
+def test_long_text_never_enters_the_side_margins():
+    img = render_image("word " * 40, "Stoicism", seed=1).convert("L")
+    assert img.crop((0, 0, 60, 1350)).getextrema()[1] < TEXT_WHITE
+    assert img.crop((1020, 0, 1080, 1350)).getextrema()[1] < TEXT_WHITE
+
+
+def test_same_inputs_give_the_same_image():
+    a = render_image(HOOK, "Stoicism", seed=4)
+    b = render_image(HOOK, "Stoicism", seed=4)
+    assert ImageChops.difference(a, b).getbbox() is None
+
+
+def test_seed_changes_the_picture():
+    a = render_image(HOOK, "Stoicism", seed=4)
+    b = render_image(HOOK, "Stoicism", seed=5)
+    assert ImageChops.difference(a, b).getbbox() is not None
+
+
+def test_hook_lines_are_balanced_with_no_lone_last_word():
+    draw = ImageDraw.Draw(Image.new("RGB", (10, 10)))
+    _, lines, _ = fit_hook("You test your own ideas the wrong way", 500, draw)
+    assert len(lines) == 2
+    assert all(len(line.split()) >= 3 for line in lines)
 
 
 def test_curly_quotes_accents_dashes_render():
     text = "Nietzsche’s “abyss” — café, naïve"
-    render_slide("idea", text, text, 2, 7)
+    render_image(text, text, seed=1)
 
 
-def test_missing_glyph_raises():
+def test_missing_glyph_in_hook_raises():
     with pytest.raises(UnsupportedGlyphError):
-        render_slide("idea", "漢字", "", 2, 7)
+        render_image("漢字", "Stoicism", seed=1)
 
 
-def test_text_too_long_for_slide_raises():
+def test_missing_glyph_in_topic_raises():
+    with pytest.raises(UnsupportedGlyphError):
+        render_image(HOOK, "漢字", seed=1)
+
+
+def test_text_too_long_for_the_post_raises():
     with pytest.raises(TextOverflowError):
-        render_slide("idea", "Title", "word " * 2000, 2, 7)
+        render_image("word " * 2000, "Stoicism", seed=1)
 
 
-def test_carousel_slide_count(tmp_path):
-    paths = render_carousel(make_idea(5), tmp_path, "Follow for more.")
-    assert [p.name for p in paths] == [f"slide-{i}.png" for i in range(1, 8)]
-    for p in paths:
-        assert p.exists()
-        assert Image.open(p).size == (1080, 1350)
+def test_render_post_writes_one_png(tmp_path: Path):
+    paths = render_post(make_idea(), tmp_path / "2026-11-23")
+    assert paths == [tmp_path / "2026-11-23" / "post.png"]
+    assert Image.open(paths[0]).size == (1080, 1350)
+
+
+def test_each_day_gets_its_own_picture_and_a_rerun_matches(tmp_path: Path):
+    (a,) = render_post(make_idea("2026-11-23"), tmp_path / "a")
+    (again,) = render_post(make_idea("2026-11-23"), tmp_path / "again")
+    (b,) = render_post(make_idea("2026-11-24"), tmp_path / "b")
+    assert a.read_bytes() == again.read_bytes()
+    assert a.read_bytes() != b.read_bytes()

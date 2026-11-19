@@ -5,7 +5,7 @@ import pytest
 from carousel.errors import IdeaParseError
 from carousel.ideas import idea_for_date, is_postable, load_ideas, parse_ideas
 from carousel.models import Slide
-from carousel.render import render_carousel
+from carousel.render import render_post
 
 REPO = Path(__file__).resolve().parents[1]
 
@@ -83,16 +83,22 @@ def test_needs_check_is_not_postable():
     assert not is_postable(idea)
 
 
-def test_three_slides_is_not_postable():
-    text = VALID.replace("- Rehearse, then relax :: Face it in thought first.\n", "").replace(
-        "- Your move :: Name one fear tonight.\n", ""
-    )
-    (idea,) = parse_ideas(text)
-    assert len(idea.slides) == 3
-    assert not is_postable(idea)
+NO_SLIDES = """\
+## 2026-11-23
+status: ready
+topic: Stoicism
+hook: Seneca rehearsed disaster every morning
+caption: Short caption. #stoicism #philosophy
+"""
 
 
-def test_ready_with_five_slides_is_postable():
+def test_entry_without_slides_is_valid_and_postable():
+    (idea,) = parse_ideas(NO_SLIDES)
+    assert idea.slides == []
+    assert is_postable(idea)
+
+
+def test_ready_entry_with_slides_is_postable():
     (idea,) = parse_ideas(VALID)
     assert is_postable(idea)
 
@@ -109,4 +115,4 @@ def test_first_week_file_is_valid_and_renders(tmp_path):
     assert [i.date for i in ideas] == [f"2026-11-{d}" for d in range(23, 30)]
     for idea in ideas:
         assert is_postable(idea), idea.date
-        render_carousel(idea, tmp_path / idea.date, "Follow for more.")
+        render_post(idea, tmp_path / idea.date)

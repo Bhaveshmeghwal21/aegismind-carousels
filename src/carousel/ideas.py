@@ -6,7 +6,6 @@ from .models import Idea, Slide
 
 STATUSES = ("ready", "needs-check")
 REQUIRED_FIELDS = ("status", "topic", "hook", "caption")
-MIN_SLIDES, MAX_SLIDES = 4, 6
 HEADING = re.compile(r"^##\s+(\d{4}-\d{2}-\d{2})\s*$", re.MULTILINE)
 
 
@@ -36,15 +35,13 @@ def _parse_entry(date: str, block: str) -> Idea:
             raise IdeaParseError(f"{date}: missing '{name}'")
     if fields["status"].lower() not in STATUSES:
         raise IdeaParseError(f"{date}: status must be one of {STATUSES}, got {fields['status']!r}")
-    if not slides:
-        raise IdeaParseError(f"{date}: no slides")
     return Idea(
         date=date,
         status=fields["status"].lower(),
         topic=fields["topic"],
         hook=fields["hook"],
-        slides=slides,
         caption=fields["caption"],
+        slides=slides,
     )
 
 
@@ -77,4 +74,4 @@ def idea_for_date(ideas: list[Idea], date: str) -> Idea | None:
 
 
 def is_postable(idea: Idea) -> bool:
-    return idea.status == "ready" and MIN_SLIDES <= len(idea.slides) <= MAX_SLIDES
+    return idea.status == "ready"

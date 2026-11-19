@@ -1,6 +1,11 @@
 # Faceless philosophy/psychology carousel account: design
 
-Date: 2026-11-19. Status: waiting for owner approval.
+Date: 2026-11-19. Status: approved by the owner, then amended the same day (below).
+
+> **Amendment, 2026-11-19 (owner's direction after reviewing the first draft look).**
+> 1. **One image, not a carousel, for now.** Each post is a single 1080×1350 picture: a small topic label and one line (the hook) over dark art, with the explanation in the caption. The slide-by-slide outline and the closing slide are paused. The ideas format still accepts a `slides:` block (ignored) so carousels can come back.
+> 2. **Look.** Black, white and grey only, no red. A normal serif font (EB Garamond) at moderate size, not large condensed type. The background is original dark landscape art drawn in code (moon, layered ridges, mist, film grain), different every day. Copyrighted art, such as manga panels, is not used: it is the reposted, unoriginal content Instagram demotes.
+> 3. The rest of this document still describes the original carousel plan; where they differ, this amendment wins. Posts are now `posts/YYYY-MM-DD/post.png`.
 
 ## Intent and why
 

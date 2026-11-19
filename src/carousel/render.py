@@ -1,48 +1,62 @@
+import zlib
 from functools import lru_cache
 from pathlib import Path
 
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont
 
+from .art import make_art, ramp
 from .errors import TextOverflowError, UnsupportedGlyphError
 from .models import Idea
-from .palette import BLACK, RED, WHITE
 
 SIZE = (1080, 1350)
-MARGIN = 60
+MARGIN = 70
 MAX_WIDTH = SIZE[0] - 2 * MARGIN
+CENTER = SIZE[0] // 2
 HANDLE = "@theaegismind"
 
-FONT_DIR = Path(__file__).resolve().parents[2] / "assets" / "fonts"
-HEADLINE_FONT = FONT_DIR / "Anton-Regular.ttf"
-BODY_FONT = FONT_DIR / "Inter-Variable.ttf"
+FONT_PATH = Path(__file__).resolve().parents[2] / "assets" / "fonts" / "EBGaramond-Variable.ttf"
+WEIGHT = 500
 
-FOOTER_SIZE = 28
-FOOTER_BASELINE = SIZE[1] - MARGIN
-BODY_BOTTOM = FOOTER_BASELINE - 80  # keep body text clear of the footer
+BLACK, WHITE = (0, 0, 0), (255, 255, 255)
+SOFT, DIM = (205, 205, 205), (140, 140, 140)
+
+HOOK_START, HOOK_MIN, HOOK_PITCH = 68, 40, 1.3
+LABEL_SIZE, LABEL_BASELINE = 28, 170
+HOOK_FIRST_BASELINE = LABEL_BASELINE + 110
+TEXT_BOTTOM = 820
+HANDLE_SIZE, HANDLE_BASELINE = 28, SIZE[1] - 70
 
 
 @lru_cache(maxsize=None)
-def _cmap(path: Path) -> frozenset[int]:
-    return frozenset(TTFont(path).getBestCmap())
+def _cmap() -> frozenset[int]:
+    return frozenset(TTFont(FONT_PATH).getBestCmap())
 
 
-def _check_glyphs(text: str, font_path: Path) -> None:
-    cmap = _cmap(font_path)
+@lru_cache(maxsize=None)
+def _font(size: int) -> ImageFont.FreeTypeFont:
+    # BASIC layout: same glyph placement on every machine, whether or not Raqm is installed
+    font = ImageFont.truetype(str(FONT_PATH), size, layout_engine=ImageFont.Layout.BASIC)
+    font.set_variation_by_axes([WEIGHT])
+    return font
+
+
+def _check_glyphs(text: str) -> None:
+    cmap = _cmap()
     for ch in text:
         if ord(ch) not in cmap:
-            raise UnsupportedGlyphError(f"{ch!r} (U+{ord(ch):04X}) is not in {font_path.name}")
+            raise UnsupportedGlyphError(f"{ch!r} (U+{ord(ch):04X}) is not in {FONT_PATH.name}")
 
 
-def _wrap(text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw) -> list[str] | None:
-    """Greedy word wrap to MAX_WIDTH. None if a single word is wider than a line."""
+def _wrap(text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw, width: int) -> list[str] | None:
+    """Greedy word wrap to `width`. None if a single word is wider than a line."""
     lines: list[str] = []
     current = ""
     for word in text.split():
-        if draw.textlength(word, font=font) > MAX_WIDTH:
+        if draw.textlength(word, font=font) > width:
             return None
         trial = f"{current} {word}".strip()
-        if current and draw.textlength(trial, font=font) > MAX_WIDTH:
+        if current and draw.textlength(trial, font=font) > width:
             lines.append(current)
             current = word
         else:
@@ -52,100 +66,61 @@ def _wrap(text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw) ->
     return lines
 
 
-def _fit(
-    text: str,
-    font_path: Path,
-    start: int,
-    minimum: int,
-    max_height: int,
-    pitch_factor: float,
-    draw: ImageDraw.ImageDraw,
-) -> tuple[ImageFont.FreeTypeFont, list[str], int]:
-    """Largest font size (stepping down) whose wrapped text fits max_height."""
-    for size in range(start, minimum - 1, -2):
-        font = ImageFont.truetype(str(font_path), size)
-        lines = _wrap(text, font, draw)
+def _balanced_wrap(text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.ImageDraw) -> list[str] | None:
+    """Wrap to MAX_WIDTH, then narrow the lines as far as possible without adding a line,
+    so the last line is never a lone straggler."""
+    lines = _wrap(text, font, draw, MAX_WIDTH)
+    if lines is None or len(lines) < 2:
+        return lines
+    low, high = 0, MAX_WIDTH
+    while low < high:
+        mid = (low + high) // 2
+        trial = _wrap(text, font, draw, mid)
+        if trial is not None and len(trial) <= len(lines):
+            high = mid
+        else:
+            low = mid + 1
+    return _wrap(text, font, draw, high)
+
+
+def fit_hook(text: str, max_height: int, draw: ImageDraw.ImageDraw) -> tuple[ImageFont.FreeTypeFont, list[str], int]:
+    """Largest font size (stepping down from HOOK_START) whose balanced wrap fits max_height."""
+    for size in range(HOOK_START, HOOK_MIN - 1, -2):
+        font = _font(size)
+        lines = _balanced_wrap(text, font, draw)
         if lines is None:
             continue
-        pitch = int(size * pitch_factor)
+        pitch = int(size * HOOK_PITCH)
         if pitch * len(lines) <= max_height:
             return font, lines, pitch
-    raise TextOverflowError(f"text does not fit at {minimum}px: {text[:40]!r}...")
+    raise TextOverflowError(f"text does not fit at {HOOK_MIN}px: {text[:40]!r}...")
 
 
-def _footer(draw: ImageDraw.ImageDraw, index: int, total: int) -> None:
-    font = ImageFont.truetype(str(BODY_FONT), FOOTER_SIZE)
-    draw.text((MARGIN, FOOTER_BASELINE), f"{index}/{total}", font=font, fill=WHITE, anchor="ls")
-    draw.text((SIZE[0] - MARGIN, FOOTER_BASELINE), HANDLE, font=font, fill=WHITE, anchor="rs")
+def render_image(hook: str, topic: str, seed: int) -> Image.Image:
+    """One 1080x1350 post: dark art, a small topic label, the hook line, the account handle."""
+    label = topic.upper()
+    _check_glyphs(hook)
+    _check_glyphs(label)
 
+    art = make_art(seed).convert("RGB")
+    fade_in = ramp([(0, 0.0), (330, 0.0), (720, 1.0), (SIZE[1], 1.0)])
+    img = Image.composite(art, Image.new("RGB", SIZE, BLACK), fade_in)
 
-def _draw_headline_block(draw: ImageDraw.ImageDraw, text: str, start: int) -> None:
-    """Red bar above a large white headline, centred vertically (hook and closing slides)."""
-    text = text.upper()
-    _check_glyphs(text, HEADLINE_FONT)
-    bar_h, gap = 14, 56
-    area_top, area_bottom = MARGIN, BODY_BOTTOM
-    font, lines, pitch = _fit(
-        text, HEADLINE_FONT, start, 70, area_bottom - area_top - bar_h - gap, 1.12, draw
-    )
-    cap_h = -font.getbbox("H", anchor="ls")[1]
-    text_h = cap_h + pitch * (len(lines) - 1)
-    block_h = bar_h + gap + text_h
-    top = area_top + (area_bottom - area_top - block_h) // 2
-    draw.rectangle((MARGIN, top, MARGIN + 140, top + bar_h - 1), fill=RED)
-    baseline = top + bar_h + gap + cap_h
-    for line in lines:
-        draw.text((MARGIN, baseline), line, font=font, fill=WHITE, anchor="ls")
-        baseline += pitch
-
-
-def _draw_idea_block(draw: ImageDraw.ImageDraw, title: str, body: str) -> None:
-    title = title.upper()
-    _check_glyphs(title, HEADLINE_FONT)
-    _check_glyphs(body, BODY_FONT)
-    top = MARGIN + 60
-    t_font, t_lines, t_pitch = _fit(title, HEADLINE_FONT, 120, 52, 400, 1.12, draw)
-    cap_h = -t_font.getbbox("H", anchor="ls")[1]
-    baseline = top + cap_h
-    for line in t_lines:
-        draw.text((MARGIN, baseline), line, font=t_font, fill=RED, anchor="ls")
-        baseline += t_pitch
-    if not body.strip():
-        return
-    body_top = baseline - t_pitch + 56
-    b_font, b_lines, b_pitch = _fit(body, BODY_FONT, 66, 30, BODY_BOTTOM - body_top, 1.4, draw)
-    y = body_top
-    for line in b_lines:
-        draw.text((MARGIN, y), line, font=b_font, fill=WHITE, anchor="la")
-        y += b_pitch
-
-
-def render_slide(kind: str, title: str, body: str, index: int, total: int) -> Image.Image:
-    """Render one 1080x1350 slide. kind is "hook", "idea" or "closing"."""
-    img = Image.new("RGB", SIZE, BLACK)
     draw = ImageDraw.Draw(img)
-    if kind in ("hook", "closing"):
-        _draw_headline_block(draw, title, 170)
-    elif kind == "idea":
-        _draw_idea_block(draw, title, body)
-    else:
-        raise ValueError(f"unknown slide kind: {kind!r}")
-    _footer(draw, index, total)
+    draw.text((CENTER, LABEL_BASELINE), label, font=_font(LABEL_SIZE), fill=SOFT, anchor="ms")
+    font, lines, pitch = fit_hook(hook, TEXT_BOTTOM - HOOK_FIRST_BASELINE, draw)
+    baseline = HOOK_FIRST_BASELINE
+    for line in lines:
+        draw.text((CENTER, baseline), line, font=font, fill=WHITE, anchor="ms")
+        baseline += pitch
+    draw.text((CENTER, HANDLE_BASELINE), HANDLE, font=_font(HANDLE_SIZE), fill=DIM, anchor="ms")
     return img
 
 
-def render_carousel(idea: Idea, out_dir: Path, closing_line: str) -> list[Path]:
-    """Write slide-1.png .. slide-N.png (N = len(idea.slides) + 2). Nothing is written if any slide fails."""
-    total = len(idea.slides) + 2
-    images = [render_slide("hook", idea.hook, "", 1, total)]
-    for i, slide in enumerate(idea.slides, start=2):
-        images.append(render_slide("idea", slide.title, slide.body, i, total))
-    images.append(render_slide("closing", closing_line, "", total, total))
-
+def render_post(idea: Idea, out_dir: Path) -> list[Path]:
+    """Write out_dir/post.png for this idea. The picture is seeded by the date, so a rerun is identical."""
+    img = render_image(idea.hook, idea.topic, seed=zlib.crc32(idea.date.encode()))
     out_dir.mkdir(parents=True, exist_ok=True)
-    paths = []
-    for n, img in enumerate(images, start=1):
-        path = out_dir / f"slide-{n}.png"
-        img.save(path, optimize=True)
-        paths.append(path)
-    return paths
+    path = out_dir / "post.png"
+    img.save(path, optimize=True)
+    return [path]
