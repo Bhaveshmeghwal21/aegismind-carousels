@@ -12,3 +12,7 @@ class TextOverflowError(ValueError):
 
 class ArtNotFoundError(ValueError):
     """An idea asked for an art id that is not in the art library."""
+
+
+class MusicNotFoundError(ValueError):
+    """An idea asked for a music id that is not in the music library."""

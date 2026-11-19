@@ -1,6 +1,7 @@
 from carousel.caption import build_caption, display_quote
 from carousel.library import load_library
 from carousel.models import Idea
+from carousel.music import load_music
 
 QUOTE = "Think lightly of yourself and deeply of the world."
 
@@ -37,6 +38,18 @@ def test_caption_has_quote_attribution_reflection_art_credit_and_tags_in_order(a
         "\n"
         "#musashi #stoic"
     )
+
+
+def test_caption_credits_the_music_right_after_the_art(art_dir, music_dir):
+    piece = load_library(art_dir)["a1"]
+    track = load_music(music_dir)["tone-a"]
+    text = build_caption(idea(), piece, track)
+    assert (
+        "Art: Piece a1, Unknown, c. 100 CE. The Cleveland Museum of Art, open access (CC0)\n"
+        "Music: Tone A, Test Composer, performed by Test Player, 1916. Public domain\n"
+        "\n"
+        "#musashi #stoic"
+    ) in text
 
 
 def test_caption_skips_the_parts_an_entry_leaves_out(art_dir):

@@ -4,11 +4,11 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .errors import ArtNotFoundError, IdeaParseError
+from .errors import ArtNotFoundError, IdeaParseError, MusicNotFoundError
 from .ideas import idea_for_date, is_postable, load_ideas
 from .library import DEFAULT_ART_DIR
+from .music import DEFAULT_MUSIC_DIR
 from .render import render_post
-from .video import make_reel
 
 EXIT_OK = 0
 EXIT_NOTHING_TO_POST = 3
@@ -53,12 +53,10 @@ def _render(args: argparse.Namespace) -> int:
             print(f"{args.date}: idea is not postable (status {idea.status!r})", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
     try:
-        paths = render_post(idea, out_dir / args.date, Path(args.art))
-    except ArtNotFoundError as err:
+        paths = render_post(idea, out_dir / args.date, Path(args.art), Path(args.music), args.reel)
+    except (ArtNotFoundError, MusicNotFoundError) as err:
         print(f"{args.date}: {err}", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
-    if args.reel:
-        paths.append(make_reel(paths[0], out_dir / args.date / "reel.mp4", args.reel))
     print(json.dumps([p.as_posix() for p in paths]))
     return EXIT_OK
 
@@ -77,7 +75,8 @@ def main(argv: list[str] | None = None) -> int:
     render.add_argument("--ideas", default="ideas")
     render.add_argument("--out", default="posts")
     render.add_argument("--art", default=str(DEFAULT_ART_DIR), help="art library folder")
-    render.add_argument("--reel", type=int, default=0, metavar="SECONDS", help="also write reel.mp4: the post held still this long")
+    render.add_argument("--music", default=str(DEFAULT_MUSIC_DIR), help="music library folder")
+    render.add_argument("--reel", type=int, default=0, metavar="SECONDS", help="also write reel.mp4: the post held still this long, with music")
     render.set_defaults(func=_render)
 
     mark = sub.add_parser("mark-posted", help="record that a date has been posted or drafted")

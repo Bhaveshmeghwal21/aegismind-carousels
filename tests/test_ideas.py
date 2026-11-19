@@ -5,8 +5,9 @@ import pytest
 from carousel.errors import IdeaParseError
 from carousel.ideas import idea_for_date, is_postable, load_ideas, parse_ideas
 from carousel.library import load_library, pick_art
+from carousel.music import load_music, pick_music
 from carousel.render import render_post
-from conftest import REAL_ART_DIR, REPO
+from conftest import REAL_ART_DIR, REAL_MUSIC_DIR, REPO
 
 APPROVED = "approved: yes\n\n"
 
@@ -46,9 +47,9 @@ def test_a_minimal_entry_needs_only_status_quote_and_author():
     assert (idea.source, idea.image, idea.caption, idea.tags, idea.music) == ("", "", "", "", "")
 
 
-def test_music_line_is_read_with_its_dash_and_accents():
-    (idea,) = parse_ideas(MINIMAL + "music: Gymnopédie No. 1 — Erik Satie\n")
-    assert idea.music == "Gymnopédie No. 1 — Erik Satie"
+def test_music_line_is_read():
+    (idea,) = parse_ideas(MINIMAL + "music: goldberg-aria\n")
+    assert idea.music == "goldberg-aria"
 
 
 def test_two_entries_parse_in_order():
@@ -142,8 +143,10 @@ def test_first_week_file_is_valid_and_renders(tmp_path):
     ideas = parse_ideas(text.replace("approved: no", "approved: yes"))  # once approved, every entry must post
     assert [i.date for i in ideas] == [f"2026-11-{d}" for d in range(23, 30)]
     library = load_library(REAL_ART_DIR)
+    music = load_music(REAL_MUSIC_DIR)
     for idea in ideas:
         assert is_postable(idea), idea.date
         assert idea.source, f"{idea.date}: every quote needs a source"
         pick_art(library, idea.date, idea.image or None)
+        pick_music(music, idea.date, idea.music or None)
         render_post(idea, tmp_path / idea.date, REAL_ART_DIR)

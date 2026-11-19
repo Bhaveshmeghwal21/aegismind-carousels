@@ -1,0 +1,123 @@
+{
+ "goldberg-aria": {
+  "title": "Goldberg Variations, BWV 988: Aria",
+  "composer": "J. S. Bach",
+  "performer": "Kimiko Ishizaka",
+  "year": "2012",
+  "license": "CC0",
+  "source": "https://archive.org/details/OpenGoldbergVariations",
+  "file": "goldberg-aria.m4a",
+  "start": 0.0,
+  "mood": "solemn, contemplative, still"
+ },
+ "goldberg-var13": {
+  "title": "Goldberg Variations, BWV 988: Variatio 13",
+  "composer": "J. S. Bach",
+  "performer": "Kimiko Ishizaka",
+  "year": "2012",
+  "license": "CC0",
+  "source": "https://archive.org/details/OpenGoldbergVariations",
+  "file": "goldberg-var13.m4a",
+  "start": 0.0,
+  "mood": "lyrical, wistful, gentle"
+ },
+ "goldberg-var15": {
+  "title": "Goldberg Variations, BWV 988: Variatio 15",
+  "composer": "J. S. Bach",
+  "performer": "Kimiko Ishizaka",
+  "year": "2012",
+  "license": "CC0",
+  "source": "https://archive.org/details/OpenGoldbergVariations",
+  "file": "goldberg-var15.m4a",
+  "start": 0.0,
+  "mood": "dark, austere, inward"
+ },
+ "goldberg-var21": {
+  "title": "Goldberg Variations, BWV 988: Variatio 21",
+  "composer": "J. S. Bach",
+  "performer": "Kimiko Ishizaka",
+  "year": "2012",
+  "license": "CC0",
+  "source": "https://archive.org/details/OpenGoldbergVariations",
+  "file": "goldberg-var21.m4a",
+  "start": 0.0,
+  "mood": "stark, severe, determined"
+ },
+ "goldberg-var25": {
+  "title": "Goldberg Variations, BWV 988: Variatio 25",
+  "composer": "J. S. Bach",
+  "performer": "Kimiko Ishizaka",
+  "year": "2012",
+  "license": "CC0",
+  "source": "https://archive.org/details/OpenGoldbergVariations",
+  "file": "goldberg-var25.m4a",
+  "start": 0.0,
+  "mood": "sorrowful, deep, anxious"
+ },
+ "wtc-prelude-c": {
+  "title": "The Well-Tempered Clavier, Book 1: Prelude No. 1 in C major, BWV 846",
+  "composer": "J. S. Bach",
+  "performer": "Kimiko Ishizaka",
+  "year": "2015",
+  "license": "Public domain",
+  "source": "https://archive.org/details/bach-well-tempered-clavier-book-1",
+  "file": "wtc-prelude-c.m4a",
+  "start": 0.0,
+  "mood": "calm, flowing, clear"
+ },
+ "nocturne-godowsky-1916": {
+  "title": "Nocturne in E-flat major, Op. 9 No. 2",
+  "composer": "Frédéric Chopin",
+  "performer": "Leopold Godowsky",
+  "year": "1916",
+  "license": "Public domain",
+  "source": "https://archive.org/details/a-5800-godowsky-chopin-nocturne",
+  "file": "nocturne-godowsky-1916.m4a",
+  "start": 0.0,
+  "mood": "tender, calm, night, old recording"
+ },
+ "moonlight-lamond-1922": {
+  "title": "Piano Sonata No. 14 \"Moonlight\", Op. 27 No. 2",
+  "composer": "Ludwig van Beethoven",
+  "performer": "Frederic Lamond",
+  "year": "1922",
+  "license": "Public domain",
+  "source": "https://archive.org/details/1922-moonlight-sonata-c-sharp-minor-beethoven-frederic-lamond-hmv-d-718-3-sides",
+  "file": "moonlight-lamond-1922.m4a",
+  "start": 0.0,
+  "mood": "restless, nocturnal, longing, old recording"
+ },
+ "nocturne-heifetz-1924": {
+  "title": "Nocturne (arranged for violin)",
+  "composer": "Frédéric Chopin",
+  "performer": "Jascha Heifetz",
+  "year": "1924",
+  "license": "Public domain",
+  "source": "https://archive.org/details/1924-nocturne-chopin-jascha-heifetz-vic-74811",
+  "file": "nocturne-heifetz-1924.m4a",
+  "start": 0.0,
+  "mood": "singing, intense, bittersweet, old recording"
+ },
+ "largo-handel-1913": {
+  "title": "Largo",
+  "composer": "George Frideric Handel",
+  "performer": "Victor Herbert's Orchestra",
+  "year": "1913",
+  "license": "Public domain",
+  "source": "https://archive.org/details/loc-jukebox-133386-largo",
+  "file": "largo-handel-1913.m4a",
+  "start": 0.0,
+  "mood": "solemn, noble, slow, old recording"
+ },
+ "waltz-chopin-69-1": {
+  "title": "Waltz in A-flat major, Op. 69 No. 1",
+  "composer": "Frédéric Chopin",
+  "performer": "Luke Faulkner",
+  "year": "Musopen release",
+  "license": "Public domain",
+  "source": "https://archive.org/details/MusopenChopinWaltzOp69no1",
+  "file": "waltz-chopin-69-1.m4a",
+  "start": 0.0,
+  "mood": "melancholy, farewell, graceful"
+ }
+}

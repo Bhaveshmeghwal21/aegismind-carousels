@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 from PIL import Image, ImageChops, ImageDraw, ImageStat
 
-from carousel.errors import ArtNotFoundError, TextOverflowError, UnsupportedGlyphError
+from carousel.errors import ArtNotFoundError, MusicNotFoundError, TextOverflowError, UnsupportedGlyphError
 from carousel.models import Idea
 from carousel.render import fit_quote, render_image, render_post
 
@@ -94,11 +94,24 @@ def test_render_post_writes_the_image_and_the_caption(tmp_path: Path, art_dir: P
     assert "Art: Piece b2," in caption
 
 
-def test_music_choice_is_written_for_the_daily_routine(tmp_path: Path, art_dir: Path):
-    render_post(make_idea(music="Gymnopédie No. 1 — Erik Satie"), tmp_path / "with", art_dir)
-    assert (tmp_path / "with" / "music.txt").read_text(encoding="utf-8").strip() == "Gymnopédie No. 1 — Erik Satie"
-    render_post(make_idea(), tmp_path / "without", art_dir)
-    assert not (tmp_path / "without" / "music.txt").exists()
+def test_reel_option_writes_the_video_and_credits_the_music(tmp_path: Path, art_dir: Path, music_dir: Path):
+    paths = render_post(make_idea(music="tone-b"), tmp_path / "day", art_dir, music_dir, reel_seconds=2)
+    assert [p.name for p in paths] == ["post.png", "reel.mp4"]
+    assert paths[1].exists()
+    caption = (tmp_path / "day" / "caption.txt").read_text(encoding="utf-8")
+    assert "Music: Tone B, Test Composer, performed by Test Player, 1916. Public domain" in caption
+
+
+def test_without_a_reel_there_is_no_video_and_no_music_credit(tmp_path: Path, art_dir: Path, music_dir: Path):
+    paths = render_post(make_idea(), tmp_path / "day", art_dir, music_dir)
+    assert [p.name for p in paths] == ["post.png"]
+    assert "Music:" not in (tmp_path / "day" / "caption.txt").read_text(encoding="utf-8")
+
+
+def test_unknown_music_id_raises_and_writes_nothing(tmp_path: Path, art_dir: Path, music_dir: Path):
+    with pytest.raises(MusicNotFoundError):
+        render_post(make_idea(music="nope"), tmp_path / "x", art_dir, music_dir, reel_seconds=1)
+    assert not (tmp_path / "x").exists()
 
 
 def test_each_day_gets_its_own_art_and_a_rerun_matches(tmp_path: Path, art_dir: Path):

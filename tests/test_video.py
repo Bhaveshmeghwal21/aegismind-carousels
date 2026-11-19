@@ -49,6 +49,27 @@ def test_reel_holds_the_image_still_between_black_bars(tmp_path: Path, post: Pat
     assert img.getpixel((540, 1850)) < 25  # black bar below it
 
 
+def mean_volume(path: Path) -> float:
+    log = subprocess.run(
+        [find_ffmpeg(), "-hide_banner", "-i", str(path), "-vn", "-af", "volumedetect", "-f", "null", "-"],
+        capture_output=True,
+        text=True,
+    ).stderr
+    return float(re.search(r"mean_volume: (-?[\d.]+) dB", log).group(1))
+
+
+def test_reel_without_music_is_silent(tmp_path: Path, post: Path):
+    assert mean_volume(make_reel(post, tmp_path / "reel.mp4", seconds=2)) < -70
+
+
+def test_reel_plays_the_chosen_music_for_its_whole_length(tmp_path: Path, post: Path, music_dir: Path):
+    out = make_reel(post, tmp_path / "reel.mp4", seconds=4, audio=music_dir / "tone-a.m4a", audio_start=0.5)
+    info = probe(out)
+    assert "Audio: aac" in info and "Video: h264" in info
+    assert re.search(r"Duration: 00:00:0[34]\.", info), info
+    assert mean_volume(out) > -40
+
+
 def test_missing_image_raises_and_writes_nothing(tmp_path: Path):
     with pytest.raises(FileNotFoundError):
         make_reel(tmp_path / "nope.png", tmp_path / "reel.mp4", seconds=1)

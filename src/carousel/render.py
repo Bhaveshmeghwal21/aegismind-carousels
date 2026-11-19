@@ -10,6 +10,8 @@ from .errors import TextOverflowError, UnsupportedGlyphError
 from .grade import grade_art, ramp
 from .library import DEFAULT_ART_DIR, load_library, pick_art
 from .models import Idea
+from .music import DEFAULT_MUSIC_DIR, load_music, pick_music
+from .video import make_reel
 
 SIZE = (1080, 1350)
 MARGIN = 70
@@ -124,19 +126,29 @@ def render_image(quote: str, author: str, art: Image.Image) -> Image.Image:
     return img
 
 
-def render_post(idea: Idea, out_dir: Path, art_dir: Path = DEFAULT_ART_DIR) -> list[Path]:
-    """Write out_dir/post.png and out_dir/caption.txt (and music.txt when the idea names a track). The art and grain are seeded by the date,
-    so a rerun gives identical files. Nothing is written if anything fails."""
+def render_post(
+    idea: Idea,
+    out_dir: Path,
+    art_dir: Path = DEFAULT_ART_DIR,
+    music_dir: Path = DEFAULT_MUSIC_DIR,
+    reel_seconds: int = 0,
+) -> list[Path]:
+    """Write out_dir/post.png and out_dir/caption.txt. With reel_seconds, also out_dir/reel.mp4: the
+    post held still with a public-domain recording under it, which the caption then credits.
+    The art, grain and default music are chosen by the date, so a rerun gives identical files.
+    A bad lookup, glyph or fit raises before anything is written."""
     library = load_library(art_dir)
     piece = pick_art(library, idea.date, idea.image or None)
+    track = pick_music(load_music(music_dir), idea.date, idea.music or None) if reel_seconds else None
     art = grade_art(piece, art_dir, seed=zlib.crc32(idea.date.encode()))
     img = render_image(idea.quote, idea.author, art)
-    caption = build_caption(idea, piece)
+    caption = build_caption(idea, piece, track)
 
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "post.png"
     img.save(path, optimize=True)
     (out_dir / "caption.txt").write_text(caption + "\n", encoding="utf-8")
-    if idea.music:
-        (out_dir / "music.txt").write_text(idea.music + "\n", encoding="utf-8")
-    return [path]
+    paths = [path]
+    if track:
+        paths.append(make_reel(path, out_dir / "reel.mp4", reel_seconds, Path(music_dir) / track.file, track.start))
+    return paths
