@@ -4,55 +4,67 @@ import pytest
 
 from carousel.errors import IdeaParseError
 from carousel.ideas import idea_for_date, is_postable, load_ideas, parse_ideas
-from carousel.models import Slide
+from carousel.library import load_library, pick_art
 from carousel.render import render_post
-
-REPO = Path(__file__).resolve().parents[1]
+from conftest import REAL_ART_DIR, REPO
 
 VALID = """\
 ## 2026-11-23
 status: ready
-topic: Stoicism
-hook: Seneca rehearsed disaster every morning
-slides:
-- Premeditatio malorum :: Imagine the worst before it comes.
-- Loss is borrowed :: Everything you love was lent to you.
-- Fear is a forecast :: Most of what we dread never happens.
-- Rehearse, then relax :: Face it in thought first.
-- Your move :: Name one fear tonight.
-caption: Short caption. #stoicism #philosophy
+quote: Such as are thy habitual thoughts, such also will be the character of thy mind; for the soul is dyed by the thoughts.
+author: Marcus Aurelius
+source: Meditations 5.16, tr. George Long
+image: 108313
+caption: What do you let your mind rehearse all day?
+tags: #stoicism #marcusaurelius
 """
 
-SECOND = VALID.replace("2026-11-23", "2026-11-24").replace("Stoicism", "Psychology")
+MINIMAL = """\
+## 2026-11-24
+status: ready
+quote: Think lightly of yourself and deeply of the world.
+author: Miyamoto Musashi
+"""
 
 
-def test_parses_valid_entry():
+def test_parses_a_full_entry():
     (idea,) = parse_ideas(VALID)
     assert idea.date == "2026-11-23"
     assert idea.status == "ready"
-    assert idea.topic == "Stoicism"
-    assert idea.hook == "Seneca rehearsed disaster every morning"
-    assert len(idea.slides) == 5
-    assert idea.slides[0] == Slide("Premeditatio malorum", "Imagine the worst before it comes.")
-    assert idea.caption == "Short caption. #stoicism #philosophy"
+    assert idea.quote.startswith("Such as are thy habitual thoughts")
+    assert idea.author == "Marcus Aurelius"
+    assert idea.source == "Meditations 5.16, tr. George Long"
+    assert idea.image == "108313"
+    assert idea.caption == "What do you let your mind rehearse all day?"
+    assert idea.tags == "#stoicism #marcusaurelius"
+
+
+def test_a_minimal_entry_needs_only_status_quote_and_author():
+    (idea,) = parse_ideas(MINIMAL)
+    assert (idea.source, idea.image, idea.caption, idea.tags) == ("", "", "", "")
 
 
 def test_two_entries_parse_in_order():
-    ideas = parse_ideas(VALID + "\n" + SECOND)
+    ideas = parse_ideas(VALID + "\n" + MINIMAL)
     assert [i.date for i in ideas] == ["2026-11-23", "2026-11-24"]
-    assert ideas[1].topic == "Psychology"
+    assert ideas[1].author == "Miyamoto Musashi"
 
 
-def test_missing_hook_raises_with_date():
-    text = VALID.replace("hook: Seneca rehearsed disaster every morning\n", "")
+def test_a_colon_inside_the_quote_is_kept():
+    (idea,) = parse_ideas(MINIMAL.replace("Think lightly", "Note: think lightly"))
+    assert idea.quote.startswith("Note: think lightly")
+
+
+@pytest.mark.parametrize("missing", ["quote", "author", "status"])
+def test_missing_required_field_raises_with_the_date(missing):
+    lines = [line for line in VALID.splitlines() if not line.startswith(f"{missing}:")]
     with pytest.raises(IdeaParseError, match="2026-11-23"):
-        parse_ideas(text)
+        parse_ideas("\n".join(lines))
 
 
-def test_slide_line_without_separator_raises_with_date():
-    text = VALID.replace("Loss is borrowed :: ", "Loss is borrowed ")
+def test_line_without_a_colon_raises_with_date():
     with pytest.raises(IdeaParseError, match="2026-11-23"):
-        parse_ideas(text)
+        parse_ideas(VALID + "stray words\n")
 
 
 def test_unknown_status_raises_with_date():
@@ -61,13 +73,13 @@ def test_unknown_status_raises_with_date():
 
 
 def test_one_bad_entry_does_not_hide_which_one():
-    text = VALID + "\n" + SECOND.replace("topic: Psychology\n", "")
+    text = VALID + "\n" + MINIMAL.replace("author: Miyamoto Musashi\n", "")
     with pytest.raises(IdeaParseError, match="2026-11-24"):
         parse_ideas(text)
 
 
 def test_only_date_ignores_malformed_entries_for_other_dates():
-    text = VALID + "\n" + SECOND.replace("topic: Psychology\n", "")
+    text = VALID + "\n" + MINIMAL.replace("author: Miyamoto Musashi\n", "")
     (idea,) = parse_ideas(text, only_date="2026-11-23")
     assert idea.date == "2026-11-23"
 
@@ -83,28 +95,13 @@ def test_needs_check_is_not_postable():
     assert not is_postable(idea)
 
 
-NO_SLIDES = """\
-## 2026-11-23
-status: ready
-topic: Stoicism
-hook: Seneca rehearsed disaster every morning
-caption: Short caption. #stoicism #philosophy
-"""
-
-
-def test_entry_without_slides_is_valid_and_postable():
-    (idea,) = parse_ideas(NO_SLIDES)
-    assert idea.slides == []
-    assert is_postable(idea)
-
-
-def test_ready_entry_with_slides_is_postable():
-    (idea,) = parse_ideas(VALID)
+def test_ready_entry_is_postable():
+    (idea,) = parse_ideas(MINIMAL)
     assert is_postable(idea)
 
 
 def test_load_ideas_reads_all_files_sorted_by_date(tmp_path):
-    (tmp_path / "2026-W48.md").write_text(SECOND, encoding="utf-8")
+    (tmp_path / "2026-W48.md").write_text(MINIMAL, encoding="utf-8")
     (tmp_path / "2026-W47.md").write_text(VALID, encoding="utf-8")
     (tmp_path / "notes.txt").write_text("ignore me", encoding="utf-8")
     assert [i.date for i in load_ideas(tmp_path)] == ["2026-11-23", "2026-11-24"]
@@ -113,6 +110,9 @@ def test_load_ideas_reads_all_files_sorted_by_date(tmp_path):
 def test_first_week_file_is_valid_and_renders(tmp_path):
     ideas = parse_ideas((REPO / "ideas" / "2026-W48.md").read_text(encoding="utf-8"))
     assert [i.date for i in ideas] == [f"2026-11-{d}" for d in range(23, 30)]
+    library = load_library(REAL_ART_DIR)
     for idea in ideas:
         assert is_postable(idea), idea.date
-        render_post(idea, tmp_path / idea.date)
+        assert idea.source, f"{idea.date}: every quote needs a source"
+        pick_art(library, idea.date, idea.image or None)
+        render_post(idea, tmp_path / idea.date, REAL_ART_DIR)

@@ -2,34 +2,23 @@ import re
 from pathlib import Path
 
 from .errors import IdeaParseError
-from .models import Idea, Slide
+from .models import Idea
 
 STATUSES = ("ready", "needs-check")
-REQUIRED_FIELDS = ("status", "topic", "hook", "caption")
+REQUIRED_FIELDS = ("status", "quote", "author")
 HEADING = re.compile(r"^##\s+(\d{4}-\d{2}-\d{2})\s*$", re.MULTILINE)
 
 
 def _parse_entry(date: str, block: str) -> Idea:
     fields: dict[str, str] = {}
-    slides: list[Slide] = []
-    in_slides = False
     for raw in block.splitlines():
         line = raw.strip()
         if not line:
             continue
-        if in_slides and line.startswith("- "):
-            title, sep, body = line[2:].partition(" :: ")
-            if not sep or not title.strip() or not body.strip():
-                raise IdeaParseError(f"{date}: slide line needs 'Title :: body', got {line!r}")
-            slides.append(Slide(title.strip(), body.strip()))
-            continue
         key, sep, value = line.partition(":")
         if not sep:
             raise IdeaParseError(f"{date}: cannot read line {line!r}")
-        key = key.strip().lower()
-        in_slides = key == "slides"
-        if not in_slides:
-            fields[key] = value.strip()
+        fields[key.strip().lower()] = value.strip()
     for name in REQUIRED_FIELDS:
         if not fields.get(name):
             raise IdeaParseError(f"{date}: missing '{name}'")
@@ -38,16 +27,18 @@ def _parse_entry(date: str, block: str) -> Idea:
     return Idea(
         date=date,
         status=fields["status"].lower(),
-        topic=fields["topic"],
-        hook=fields["hook"],
-        caption=fields["caption"],
-        slides=slides,
+        quote=fields["quote"],
+        author=fields["author"],
+        source=fields.get("source", ""),
+        image=fields.get("image", ""),
+        caption=fields.get("caption", ""),
+        tags=fields.get("tags", ""),
     )
 
 
 def parse_ideas(text: str, only_date: str | None = None) -> list[Idea]:
     """Parse '## YYYY-MM-DD' entries. With only_date, other entries are not parsed (a typo in
-    one day's entry must not block another day's post)."""
+    one day's entry must not block another day's post). Unknown keys such as 'note:' are ignored."""
     matches = list(HEADING.finditer(text))
     ideas = []
     for i, match in enumerate(matches):

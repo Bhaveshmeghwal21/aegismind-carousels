@@ -4,8 +4,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .errors import IdeaParseError
+from .errors import ArtNotFoundError, IdeaParseError
 from .ideas import idea_for_date, is_postable, load_ideas
+from .library import DEFAULT_ART_DIR
 from .render import render_post
 
 EXIT_OK = 0
@@ -47,7 +48,11 @@ def _render(args: argparse.Namespace) -> int:
     if not is_postable(idea):
         print(f"{args.date}: idea is not postable (status {idea.status!r})", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
-    paths = render_post(idea, out_dir / args.date)
+    try:
+        paths = render_post(idea, out_dir / args.date, Path(args.art))
+    except ArtNotFoundError as err:
+        print(f"{args.date}: {err}", file=sys.stderr)
+        return EXIT_NOTHING_TO_POST
     print(json.dumps([p.as_posix() for p in paths]))
     return EXIT_OK
 
@@ -65,6 +70,7 @@ def main(argv: list[str] | None = None) -> int:
     render.add_argument("--date", required=True, help="YYYY-MM-DD")
     render.add_argument("--ideas", default="ideas")
     render.add_argument("--out", default="posts")
+    render.add_argument("--art", default=str(DEFAULT_ART_DIR), help="art library folder")
     render.set_defaults(func=_render)
 
     mark = sub.add_parser("mark-posted", help="record that a date has been posted or drafted")

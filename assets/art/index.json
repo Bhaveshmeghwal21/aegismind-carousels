@@ -1,0 +1,456 @@
+{
+ "107832": {
+  "title": "Head of Trajan",
+  "artist": "",
+  "date": "100–200 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "107832.jpg",
+  "focus": [
+   0.5,
+   0.42
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   520,
+   330,
+   430,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1925.468"
+ },
+ "108313": {
+  "title": "Portrait Head of a Man",
+  "artist": "",
+  "date": "c. 100 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "108313.jpg",
+  "focus": [
+   0.45,
+   0.42
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   520,
+   330,
+   430,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1925.944"
+ },
+ "109192": {
+  "title": "The Marsh Flower, a Sad Human Head",
+  "artist": "Odilon Redon",
+  "date": "1885",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "109192.jpg",
+  "focus": [
+   0.5,
+   0.42
+  ],
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": [
+   0.05,
+   0.07,
+   0.95,
+   0.86
+  ],
+  "url": "https://clevelandart.org/art/1927.344.2"
+ },
+ "111518": {
+  "title": "Portrait Head of Emperor Vespasian, Recut from Head of Nero",
+  "artist": "",
+  "date": "64–79 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "111518.jpg",
+  "focus": [
+   0.5,
+   0.36
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   520,
+   330,
+   430,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1929.998"
+ },
+ "122348": {
+  "title": "A Young Man with a Chain",
+  "artist": "Rembrandt van Rijn",
+  "date": "c. 1629 or 1632",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "122348.jpg",
+  "focus": [
+   0.5,
+   0.42
+  ],
+  "gamma": 1.3,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1942.644"
+ },
+ "123490": {
+  "title": "Portrait of Don Juan Antonio Cuervo",
+  "artist": "Francisco de Goya",
+  "date": "1819",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "123490.jpg",
+  "focus": [
+   0.5,
+   0.4
+  ],
+  "gamma": 1.2,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1943.90"
+ },
+ "124089": {
+  "title": "Portrait of a Woman",
+  "artist": "Rembrandt van Rijn",
+  "date": "1635 or earlier",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "124089.jpg",
+  "focus": [
+   0.5,
+   0.42
+  ],
+  "gamma": 1.3,
+  "vignette": [
+   540,
+   540,
+   520,
+   640,
+   0.0
+  ],
+  "crop": [
+   0.04,
+   0.03,
+   0.96,
+   0.97
+  ],
+  "url": "https://clevelandart.org/art/1944.90"
+ },
+ "125224": {
+  "title": "Portrait Head of a Youth",
+  "artist": "",
+  "date": "1–100 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "125224.jpg",
+  "focus": [
+   0.5,
+   0.36
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   520,
+   330,
+   430,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1947.188"
+ },
+ "127573": {
+  "title": "A Bearded Man Wearing a Hat",
+  "artist": "Rembrandt van Rijn",
+  "date": "c. 1655–60",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "127573.jpg",
+  "focus": [
+   0.5,
+   0.42
+  ],
+  "gamma": 1.2,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1950.252"
+ },
+ "128842": {
+  "title": "Saint Peter Repentant",
+  "artist": "Georges de La Tour",
+  "date": "1645",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "128842.jpg",
+  "focus": [
+   0.5,
+   0.4
+  ],
+  "gamma": 1.2,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1951.454"
+ },
+ "129830": {
+  "title": "Portrait Head of a Noble or Official",
+  "artist": "",
+  "date": "175–200 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "129830.jpg",
+  "focus": [
+   0.5,
+   0.36
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   520,
+   330,
+   430,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1952.260"
+ },
+ "136680": {
+  "title": "Saint Jerome",
+  "artist": "Jusepe de Ribera",
+  "date": "c. 1638–40",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "136680.jpg",
+  "focus": [
+   0.5,
+   0.4
+  ],
+  "gamma": 1.3,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1961.219"
+ },
+ "141641": {
+  "title": "Memento Mori, \"To This Favour\"",
+  "artist": "William Michael Harnett",
+  "date": "1879",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "141641.jpg",
+  "focus": [
+   0.42,
+   0.42
+  ],
+  "gamma": 1.3,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1965.235"
+ },
+ "142276": {
+  "title": "Kneeling Carthusian Monk",
+  "artist": "",
+  "date": "c. 1380–1400",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "142276.jpg",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   400,
+   520,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1966.113"
+ },
+ "142560": {
+  "title": "Standing Buddha",
+  "artist": "",
+  "date": "c. 900",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "142560.jpg",
+  "focus": [
+   0.5,
+   0.45
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   290,
+   570,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1966.30"
+ },
+ "143465": {
+  "title": "Seated Buddha",
+  "artist": "",
+  "date": "c. 300 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "143465.jpg",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   400,
+   520,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1967.39"
+ },
+ "143803": {
+  "title": "Samson and Delilah",
+  "artist": "Gerrit van Honthorst",
+  "date": "c. 1616",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "143803.jpg",
+  "focus": [
+   0.5,
+   0.42
+  ],
+  "gamma": 1.2,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1968.23"
+ },
+ "144270": {
+  "title": "Saint Paul the Hermit",
+  "artist": "Mattia Preti",
+  "date": "c. 1662–64",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "144270.jpg",
+  "focus": [
+   0.5,
+   0.4
+  ],
+  "gamma": 1.25,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1969.109"
+ },
+ "144732": {
+  "title": "Storm in the Mountains",
+  "artist": "Frederic Edwin Church",
+  "date": "1847",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "144732.jpg",
+  "focus": [
+   0.5,
+   0.45
+  ],
+  "gamma": 1.4,
+  "vignette": null,
+  "crop": null,
+  "url": "https://clevelandart.org/art/1969.52"
+ },
+ "145408": {
+  "title": "Seated Shakyamuni Buddha",
+  "artist": "",
+  "date": "c. 120 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "145408.jpg",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   400,
+   520,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1970.63"
+ },
+ "145412": {
+  "title": "Portrait of Hottō Enmyō Kokushi",
+  "artist": "",
+  "date": "c. 1295–1315",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "145412.jpg",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   400,
+   520,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1970.67"
+ },
+ "147010": {
+  "title": "Standing Buddha",
+  "artist": "",
+  "date": "150–200 CE",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "147010.jpg",
+  "focus": [
+   0.5,
+   0.45
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   290,
+   570,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1972.43"
+ },
+ "147588": {
+  "title": "Seated Buddha",
+  "artist": "",
+  "date": "1100s",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "147588.jpg",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.3,
+  "vignette": [
+   540,
+   570,
+   400,
+   520,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1973.85"
+ },
+ "94676": {
+  "title": "Seated Amitayus Buddha",
+  "artist": "",
+  "date": "c. 570s",
+  "credit": "The Cleveland Museum of Art, open access (CC0)",
+  "file": "94676.jpg",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "gamma": 1.5,
+  "vignette": [
+   540,
+   570,
+   400,
+   520,
+   0.03
+  ],
+  "crop": null,
+  "url": "https://clevelandart.org/art/1915.334.1"
+ }
+}

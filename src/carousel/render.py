@@ -5,8 +5,10 @@ from pathlib import Path
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont
 
-from .art import make_art, ramp
+from .caption import build_caption, display_quote
 from .errors import TextOverflowError, UnsupportedGlyphError
+from .grade import grade_art, ramp
+from .library import DEFAULT_ART_DIR, load_library, pick_art
 from .models import Idea
 
 SIZE = (1080, 1350)
@@ -21,11 +23,11 @@ WEIGHT = 500
 BLACK, WHITE = (0, 0, 0), (255, 255, 255)
 SOFT, DIM = (205, 205, 205), (140, 140, 140)
 
-HOOK_START, HOOK_MIN, HOOK_PITCH = 68, 40, 1.3
-LABEL_SIZE, LABEL_BASELINE = 28, 170
-HOOK_FIRST_BASELINE = LABEL_BASELINE + 110
-TEXT_BOTTOM = 820
-HANDLE_SIZE, HANDLE_BASELINE = 28, SIZE[1] - 70
+QUOTE_START, QUOTE_MIN, QUOTE_PITCH = 66, 40, 1.3
+QUOTE_LAST_BASELINE = 1090
+QUOTE_MAX_HEIGHT = 520
+AUTHOR_SIZE, AUTHOR_BASELINE = 34, 1185
+HANDLE_SIZE, HANDLE_BASELINE = 28, SIZE[1] - 60
 
 
 @lru_cache(maxsize=None)
@@ -83,44 +85,56 @@ def _balanced_wrap(text: str, font: ImageFont.FreeTypeFont, draw: ImageDraw.Imag
     return _wrap(text, font, draw, high)
 
 
-def fit_hook(text: str, max_height: int, draw: ImageDraw.ImageDraw) -> tuple[ImageFont.FreeTypeFont, list[str], int]:
-    """Largest font size (stepping down from HOOK_START) whose balanced wrap fits max_height."""
-    for size in range(HOOK_START, HOOK_MIN - 1, -2):
+def fit_quote(text: str, max_height: int, draw: ImageDraw.ImageDraw) -> tuple[ImageFont.FreeTypeFont, list[str], int]:
+    """Largest font size (stepping down from QUOTE_START) whose balanced wrap fits max_height."""
+    for size in range(QUOTE_START, QUOTE_MIN - 1, -2):
         font = _font(size)
         lines = _balanced_wrap(text, font, draw)
         if lines is None:
             continue
-        pitch = int(size * HOOK_PITCH)
+        pitch = int(size * QUOTE_PITCH)
         if pitch * len(lines) <= max_height:
             return font, lines, pitch
-    raise TextOverflowError(f"text does not fit at {HOOK_MIN}px: {text[:40]!r}...")
+    raise TextOverflowError(f"text does not fit at {QUOTE_MIN}px: {text[:40]!r}...")
 
 
-def render_image(hook: str, topic: str, seed: int) -> Image.Image:
-    """One 1080x1350 post: dark art, a small topic label, the hook line, the account handle."""
-    label = topic.upper()
-    _check_glyphs(hook)
-    _check_glyphs(label)
+def render_image(quote: str, author: str, art: Image.Image) -> Image.Image:
+    """One 1080x1350 post: the art, the quote in white serif, the thinker's name, the account handle."""
+    shown, byline = display_quote(quote), f"— {author}"
+    _check_glyphs(shown)
+    _check_glyphs(byline)
 
-    art = make_art(seed).convert("RGB")
-    fade_in = ramp([(0, 0.0), (330, 0.0), (720, 1.0), (SIZE[1], 1.0)])
-    img = Image.composite(art, Image.new("RGB", SIZE, BLACK), fade_in)
+    probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+    font, lines, pitch = fit_quote(shown, QUOTE_MAX_HEIGHT, probe)
+    if probe.textlength(byline, font=_font(AUTHOR_SIZE)) > MAX_WIDTH:
+        raise TextOverflowError(f"author name too long: {author!r}")
+    first_baseline = QUOTE_LAST_BASELINE - pitch * (len(lines) - 1)
+
+    # a scrim behind the text keeps it readable whatever the art is doing there
+    scrim = ramp([(0, 1.0), (first_baseline - 230, 1.0), (first_baseline - 60, 0.45), (SIZE[1], 0.45)])
+    img = Image.composite(art.convert("RGB"), Image.new("RGB", SIZE, BLACK), scrim)
 
     draw = ImageDraw.Draw(img)
-    draw.text((CENTER, LABEL_BASELINE), label, font=_font(LABEL_SIZE), fill=SOFT, anchor="ms")
-    font, lines, pitch = fit_hook(hook, TEXT_BOTTOM - HOOK_FIRST_BASELINE, draw)
-    baseline = HOOK_FIRST_BASELINE
+    baseline = first_baseline
     for line in lines:
         draw.text((CENTER, baseline), line, font=font, fill=WHITE, anchor="ms")
         baseline += pitch
+    draw.text((CENTER, AUTHOR_BASELINE), byline, font=_font(AUTHOR_SIZE), fill=SOFT, anchor="ms")
     draw.text((CENTER, HANDLE_BASELINE), HANDLE, font=_font(HANDLE_SIZE), fill=DIM, anchor="ms")
     return img
 
 
-def render_post(idea: Idea, out_dir: Path) -> list[Path]:
-    """Write out_dir/post.png for this idea. The picture is seeded by the date, so a rerun is identical."""
-    img = render_image(idea.hook, idea.topic, seed=zlib.crc32(idea.date.encode()))
+def render_post(idea: Idea, out_dir: Path, art_dir: Path = DEFAULT_ART_DIR) -> list[Path]:
+    """Write out_dir/post.png and out_dir/caption.txt. The art and grain are seeded by the date,
+    so a rerun gives identical files. Nothing is written if anything fails."""
+    library = load_library(art_dir)
+    piece = pick_art(library, idea.date, idea.image or None)
+    art = grade_art(piece, art_dir, seed=zlib.crc32(idea.date.encode()))
+    img = render_image(idea.quote, idea.author, art)
+    caption = build_caption(idea, piece)
+
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / "post.png"
     img.save(path, optimize=True)
+    (out_dir / "caption.txt").write_text(caption + "\n", encoding="utf-8")
     return [path]

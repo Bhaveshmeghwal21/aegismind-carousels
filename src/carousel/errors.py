@@ -8,3 +8,7 @@ class UnsupportedGlyphError(ValueError):
 
 class TextOverflowError(ValueError):
     """Text cannot fit on a slide even at the smallest allowed font size."""
+
+
+class ArtNotFoundError(ValueError):
+    """An idea asked for an art id that is not in the art library."""

@@ -1,17 +1,13 @@
-from dataclasses import dataclass, field
-
-
-@dataclass(frozen=True)
-class Slide:
-    title: str
-    body: str
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
 class Idea:
     date: str  # "2026-11-23"
     status: str  # "ready" or "needs-check"
-    topic: str  # small label above the line on the image
-    hook: str  # the line on the image
-    caption: str
-    slides: list[Slide] = field(default_factory=list)  # kept for a possible return to carousels; unused for now
+    quote: str  # the words on the image, without quotation marks
+    author: str  # the thinker's name, shown under the quote
+    source: str = ""  # work and translation, for the caption (and for checking)
+    image: str = ""  # art id from assets/art/index.json; empty means pick one by date
+    caption: str = ""  # a line or two of reflection
+    tags: str = ""  # hashtags, shown last in the caption

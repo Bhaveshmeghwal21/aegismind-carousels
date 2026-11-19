@@ -3,9 +3,11 @@
 Date: 2026-11-19. Status: approved by the owner, then amended the same day (below).
 
 > **Amendment, 2026-11-19 (owner's direction after reviewing the first draft look).**
-> 1. **One image, not a carousel, for now.** Each post is a single 1080×1350 picture: a small topic label and one line (the hook) over dark art, with the explanation in the caption. The slide-by-slide outline and the closing slide are paused. The ideas format still accepts a `slides:` block (ignored) so carousels can come back.
-> 2. **Look.** Black, white and grey only, no red. A normal serif font (EB Garamond) at moderate size, not large condensed type. The background is original dark landscape art drawn in code (moon, layered ridges, mist, film grain), different every day. Copyrighted art, such as manga panels, is not used: it is the reposted, unoriginal content Instagram demotes.
-> 3. The rest of this document still describes the original carousel plan; where they differ, this amendment wins. Posts are now `posts/YYYY-MM-DD/post.png`.
+> 1. **One image, not a carousel, for now.** Each post is a single 1080×1350 picture. The slide-by-slide outline and the closing slide are paused.
+> 2. **Content: a quote.** The picture shows a quote by a real thinker (Marcus Aurelius, Seneca, Epictetus, Buddha, Musashi, Osho, Socrates and so on) and `— Name` under it. Every entry names its source work and translator, and the caption repeats them. Misattributed quotes are rife online, so wording is checked against the work where possible and uncertain entries are marked `needs-check` and never posted. Public-domain translations are preferred.
+> 3. **Look.** Black, white and grey only, no red. A normal serif font (EB Garamond), quote about 40–66 px. The background is real public-domain art (Cleveland Museum of Art open access, CC0: Roman portrait heads, Buddhist sculpture, Rembrandt-era and baroque paintings), turned black and white, darkened, vignetted and given film grain, with a dark scrim behind the text. The art is mood, not a portrait of the thinker; captions credit the work and never claim otherwise. Copyrighted art, such as manga panels, is not used: it is the reposted, unoriginal content Instagram demotes.
+> 4. Posts are `posts/YYYY-MM-DD/post.png` plus `caption.txt` (quote, source, reflection, art credit, hashtags). An earlier code-drawn landscape background was tried and replaced by the real art.
+> 5. The rest of this document still describes the original carousel plan; where they differ, this amendment wins. Posts are now `posts/YYYY-MM-DD/post.png`.
 
 ## Intent and why
 

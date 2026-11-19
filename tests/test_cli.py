@@ -6,69 +6,75 @@ from carousel.cli import already_posted, main, mark_posted
 ENTRY = """\
 ## {date}
 status: {status}
-topic: Stoicism
-{hook_line}hook: Marcus rehearsed bad days every morning
-slides:
-- Meditations 2.1 :: Marcus expected the meddler and the ungrateful.
-- Why do that? :: Expecting friction removes the shock.
-- Imagination vs reality :: We suffer more often in imagination than in reality.
-- The point :: Not pessimism. Preparation.
-- Your move :: Name one difficult moment ahead.
-caption: Prepare for the day. #stoicism
+quote: Think lightly of yourself and deeply of the world.
+author: Miyamoto Musashi
+source: Dokkōdō (1645)
+image: a1
+caption: A line of reflection.
+tags: #musashi
 """
 
 
-def entry(date="2026-11-23", status="ready", drop_hook=False):
-    text = ENTRY.format(date=date, status=status, hook_line="")
-    if drop_hook:
-        text = text.replace("hook: Marcus rehearsed bad days every morning\n", "")
+def entry(date="2026-11-23", status="ready", drop_quote=False):
+    text = ENTRY.format(date=date, status=status)
+    if drop_quote:
+        text = "\n".join(line for line in text.splitlines() if not line.startswith("quote:")) + "\n"
     return text
 
 
-def setup(tmp_path: Path, *entries: str) -> dict[str, Path]:
+def setup(tmp_path: Path, art_dir: Path, *entries: str) -> dict[str, Path]:
     ideas = tmp_path / "ideas"
     ideas.mkdir()
     (ideas / "2026-W48.md").write_text("\n".join(entries), encoding="utf-8")
-    return {"ideas": ideas, "posts": tmp_path / "posts"}
+    return {"ideas": ideas, "posts": tmp_path / "posts", "art": art_dir}
 
 
 def render(p: dict[str, Path], date: str) -> int:
-    return main(["render", "--date", date, "--ideas", str(p["ideas"]), "--out", str(p["posts"])])
+    return main(["render", "--date", date, "--ideas", str(p["ideas"]), "--out", str(p["posts"]), "--art", str(p["art"])])
 
 
-def test_render_prints_the_post_path_and_exits_0(tmp_path, capsys):
-    p = setup(tmp_path, entry())
+def test_render_prints_the_post_path_writes_the_caption_and_exits_0(tmp_path, art_dir, capsys):
+    p = setup(tmp_path, art_dir, entry())
     assert render(p, "2026-11-23") == 0
     paths = json.loads(capsys.readouterr().out)
     assert [Path(x).name for x in paths] == ["post.png"]
     assert all(Path(x).exists() for x in paths)
+    caption = (p["posts"] / "2026-11-23" / "caption.txt").read_text(encoding="utf-8")
+    assert "— Miyamoto Musashi, Dokkōdō (1645)" in caption
 
 
-def test_no_entry_for_date_exits_3_and_writes_nothing(tmp_path):
-    p = setup(tmp_path, entry())
+def test_no_entry_for_date_exits_3_and_writes_nothing(tmp_path, art_dir):
+    p = setup(tmp_path, art_dir, entry())
     assert render(p, "2026-11-30") == 3
     assert not (p["posts"] / "2026-11-30").exists()
 
 
-def test_needs_check_entry_exits_3_and_writes_nothing(tmp_path):
-    p = setup(tmp_path, entry(status="needs-check"))
+def test_needs_check_entry_exits_3_and_writes_nothing(tmp_path, art_dir):
+    p = setup(tmp_path, art_dir, entry(status="needs-check"))
     assert render(p, "2026-11-23") == 3
     assert not (p["posts"] / "2026-11-23").exists()
 
 
-def test_malformed_entry_for_the_date_exits_3_and_names_the_date(tmp_path, capsys):
-    p = setup(tmp_path, entry(drop_hook=True))
+def test_malformed_entry_for_the_date_exits_3_and_names_the_date(tmp_path, art_dir, capsys):
+    p = setup(tmp_path, art_dir, entry(drop_quote=True))
     assert render(p, "2026-11-23") == 3
     assert "2026-11-23" in capsys.readouterr().err
 
 
-def test_malformed_entry_for_another_day_does_not_block_today(tmp_path):
-    p = setup(tmp_path, entry("2026-11-23"), entry("2026-11-24", drop_hook=True))
+def test_unknown_image_id_exits_3_and_writes_nothing(tmp_path, art_dir, capsys):
+    p = setup(tmp_path, art_dir, entry().replace("image: a1", "image: nope"))
+    assert render(p, "2026-11-23") == 3
+    assert "nope" in capsys.readouterr().err
+    assert not (p["posts"] / "2026-11-23").exists()
+
+
+def test_malformed_entry_for_another_day_does_not_block_today(tmp_path, art_dir):
+    p = setup(tmp_path, art_dir, entry("2026-11-23"), entry("2026-11-24", drop_quote=True))
     assert render(p, "2026-11-23") == 0
 
 
-def test_already_posted_exits_4_and_renders_nothing(tmp_path):
-    p = setup(tmp_path, entry())
+def test_already_posted_exits_4_and_renders_nothing(tmp_path, art_dir):
+    p = setup(tmp_path, art_dir, entry())
     assert render(p, "2026-11-23") == 0
     (p["posts"] / "2026-11-23" / "post.png").unlink()
     mark_posted(p["posts"], "2026-11-23", "draft", "https://example.test/post/1")
