@@ -9,7 +9,8 @@ Date: 2026-11-19. Status: approved by the owner, then amended the same day (belo
 > 4. Posts are `posts/YYYY-MM-DD/post.png` plus `caption.txt` (quote, source, reflection, art credit, hashtags). An earlier code-drawn landscape background was tried and replaced by the real art.
 > 5. **The owner approves each week.** The weekly routine writes `approved: no` at the top of the week's file. Only after the owner changes it to `approved: yes` can the daily routine post any of that week's entries (and then only as a Metricool draft while `publish_mode` is `draft`). The routines send a phone notification when a week is waiting and on any day that is skipped.
 > 6. **Thinkers are not a fixed list.** The weekly routine searches for quotes itself, from any thinker, and avoids repeating an author within 6 weeks or any quote or image.
-> 7. The rest of this document still describes the original carousel plan; where they differ, this amendment wins. Posts are now `posts/YYYY-MM-DD/post.png`.
+> 7. **Music, baked into a Reel.** Instagram attaches music only to Reels, and Metricool's connection to Instagram's own music catalogue is refused for this account (HTTP 403). So each day's post is published as a Reel: the unchanged quote image held still for 10 seconds on a 1080×1920 black frame, with a clip of a public-domain recording (Kimiko Ishizaka's CC0 Bach, recordings from 1913–1924, a Musopen release) mixed in. The clips, licences and sources are in `assets/music/index.json`; the caption credits the music. The weekly routine picks a fitting track per quote. Chopin's music is public domain; the recordings are CC0 or old enough to be public domain, but Instagram can still wrongly flag any audio, and a flagged Reel would need its music removed.
+> 8. The rest of this document still describes the original carousel plan; where they differ, this amendment wins. Posts are now `posts/YYYY-MM-DD/post.png`.
 
 ## Intent and why
 

@@ -6,8 +6,9 @@ Content and tooling for the Instagram account @theaegismind: dark, moody single-
 
 - `ideas/YYYY-Www.md`: one file per week, one entry per day. A weekly Claude routine drafts the next week; you edit or add entries on GitHub.
 - `assets/art/`: the art library. Public-domain pictures (Cleveland Museum of Art open access, CC0) with `index.json` saying how to frame and darken each one. Each post uses the entry's `image:` id, or one picked by date.
-- `src/carousel/`: the image-maker. `python -m carousel render --date YYYY-MM-DD` writes `posts/YYYY-MM-DD/post.png` (1080x1350) and `posts/YYYY-MM-DD/caption.txt` (quote, source, reflection, art credit, hashtags).
-- A daily Claude routine renders the day's post, pushes it here (the repo is public so Instagram can fetch the image) and schedules it through Metricool.
+- `assets/music/`: the music library. Short clips of public-domain recordings (Bach played by Kimiko Ishizaka under CC0, a Chopin nocturne from 1916, Beethoven's "Moonlight" from 1922, and others) with `index.json` giving each one's licence, source and mood. Each post uses the entry's `music:` id, or one picked by date.
+- `src/carousel/`: the post-maker. `python -m carousel render --date YYYY-MM-DD --reel 10` writes `posts/YYYY-MM-DD/post.png` (1080x1350), `posts/YYYY-MM-DD/reel.mp4` (the same image held still for 10 seconds on a 1080x1920 frame, with the music mixed in) and `posts/YYYY-MM-DD/caption.txt` (quote, source, reflection, art and music credits, hashtags). Instagram only attaches music to Reels, so the music is baked into the video instead of using Instagram's library, which this account cannot reach.
+- A daily Claude routine renders the day's Reel, pushes it here (the repo is public so Instagram can fetch the video) and schedules it through Metricool.
 - `routines/weekly.md` and `routines/daily.md`: the instructions each routine follows. Edit these to change how a routine behaves.
 - `config.json`: Metricool brand id, post time, and `publish_mode`.
 
@@ -20,6 +21,7 @@ quote: We suffer more often in imagination than in reality.     # the words, wit
 author: Seneca             # shown under the quote
 source: Letters to Lucilius 13, tr. Richard Gummere             # work and translator, goes in the caption
 image: 108313              # optional: an id from assets/art/index.json
+music: goldberg-var25      # optional: an id from assets/music/index.json
 caption: Most of what we dread never arrives.                   # optional reflection
 tags: #seneca #stoicism #philosophy                             # optional
 note: anything you want to remember   # optional, ignored
