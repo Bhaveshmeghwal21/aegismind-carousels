@@ -527,5 +527,35 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-writer": {
+  "title": "Roman writer by lamplight",
+  "file": "ink-writer.png",
+  "focus": [
+   0.5,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-freedman": {
+  "title": "Seated man beside a broken chain",
+  "file": "ink-freedman.png",
+  "focus": [
+   0.4,
+   0.4
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }

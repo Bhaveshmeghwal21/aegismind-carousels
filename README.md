@@ -49,6 +49,8 @@ python -m venv .venv
 .venv/Scripts/python -m pytest
 ```
 
+Every post must have its own picture: an `ink-*` id is used once ever, never again in a later week. The weekly routine marks an entry `needs-check` ("needs new ink art") when no unused picture is left, so new art has to be added before the entries can post.
+
 To add illustrations: save a 4:3 black-ink-on-white picture (no text in it) as `assets/art/<id>.png` and add an `index.json` entry copied from an `ink-*` one. Prompt idea: `Black ink manga illustration on a plain white background. An original character: ... Strictly pure black and white, no colour, no grey wash, no text, no speech bubbles, no signature, no watermark.` Name no artist, series or character.
 
 Music with `"license": "CC BY 4.0"` (Kevin MacLeod, incompetech.com) needs the credit `music_credit` writes into the caption, so never remove the caption's music line.
