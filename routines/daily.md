@@ -14,7 +14,7 @@ Hard rules:
 2. `git pull --ff-only origin main`, then `python3 -m pip install -q -r requirements.txt`. If the pinned install fails, run `python3 -m pip install -q pillow fonttools`.
 3. Render: `PYTHONPATH=src python3 -m carousel render --date DATE`
    - Exit 0: stdout is a JSON list with one path, `posts/DATE/post.png`; the finished caption is in `posts/DATE/caption.txt`. Continue.
-   - Exit 3: nothing to post (no entry, status `needs-check`, an unknown image id, or a malformed entry). Stop. Report the stderr message. Post nothing.
+   - Exit 3: nothing to post (no entry, status `needs-check`, an unknown image id, a malformed entry, or a week the owner has not approved yet). Stop. Report the stderr message and send a push notification (PushNotification) with it, so the owner knows. Post nothing.
    - Exit 4: this date was already posted. Stop and report.
    - Anything else: stop and report the error.
 4. Publish the image so Metricool can fetch it: `git add posts/DATE && git commit -m "post: image for DATE" && git push origin main`. If the push is rejected because main moved, `git pull --rebase origin main` and push again. If it still fails, stop and report.

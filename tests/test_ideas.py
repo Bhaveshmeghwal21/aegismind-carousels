@@ -8,7 +8,9 @@ from carousel.library import load_library, pick_art
 from carousel.render import render_post
 from conftest import REAL_ART_DIR, REPO
 
-VALID = """\
+APPROVED = "approved: yes\n\n"
+
+VALID = APPROVED + """\
 ## 2026-11-23
 status: ready
 quote: Such as are thy habitual thoughts, such also will be the character of thy mind; for the soul is dyed by the thoughts.
@@ -95,9 +97,32 @@ def test_needs_check_is_not_postable():
     assert not is_postable(idea)
 
 
-def test_ready_entry_is_postable():
-    (idea,) = parse_ideas(MINIMAL)
+def test_ready_entry_in_an_approved_week_is_postable():
+    (idea,) = parse_ideas(APPROVED + MINIMAL)
+    assert idea.status == "ready"
     assert is_postable(idea)
+
+
+def test_a_week_without_an_approval_line_is_not_postable():
+    (idea,) = parse_ideas(MINIMAL)
+    assert idea.status == "proposed"
+    assert not is_postable(idea)
+
+
+@pytest.mark.parametrize("header", ["approved: no\n\n", "approved:\n\n", "approved: maybe\n\n"])
+def test_a_week_not_approved_yes_is_not_postable(header):
+    (idea,) = parse_ideas(header + MINIMAL)
+    assert idea.status == "proposed" and not is_postable(idea)
+
+
+def test_approval_line_is_case_insensitive_and_one_line_approves_every_entry():
+    ideas = parse_ideas("Approved: YES\n\n" + MINIMAL + "\n" + MINIMAL.replace("11-24", "11-25"))
+    assert [i.status for i in ideas] == ["ready", "ready"]
+
+
+def test_approval_never_overrides_needs_check():
+    (idea,) = parse_ideas(APPROVED + MINIMAL.replace("status: ready", "status: needs-check"))
+    assert idea.status == "needs-check" and not is_postable(idea)
 
 
 def test_load_ideas_reads_all_files_sorted_by_date(tmp_path):
@@ -108,7 +133,8 @@ def test_load_ideas_reads_all_files_sorted_by_date(tmp_path):
 
 
 def test_first_week_file_is_valid_and_renders(tmp_path):
-    ideas = parse_ideas((REPO / "ideas" / "2026-W48.md").read_text(encoding="utf-8"))
+    text = (REPO / "ideas" / "2026-W48.md").read_text(encoding="utf-8")
+    ideas = parse_ideas(text.replace("approved: no", "approved: yes"))  # once approved, every entry must post
     assert [i.date for i in ideas] == [f"2026-11-{d}" for d in range(23, 30)]
     library = load_library(REAL_ART_DIR)
     for idea in ideas:

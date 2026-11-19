@@ -22,10 +22,11 @@ def entry(date="2026-11-23", status="ready", drop_quote=False):
     return text
 
 
-def setup(tmp_path: Path, art_dir: Path, *entries: str) -> dict[str, Path]:
+def setup(tmp_path: Path, art_dir: Path, *entries: str, approved: bool = True) -> dict[str, Path]:
     ideas = tmp_path / "ideas"
     ideas.mkdir()
-    (ideas / "2026-W48.md").write_text("\n".join(entries), encoding="utf-8")
+    header = "approved: yes\n\n" if approved else ""
+    (ideas / "2026-W48.md").write_text(header + "\n".join(entries), encoding="utf-8")
     return {"ideas": ideas, "posts": tmp_path / "posts", "art": art_dir}
 
 
@@ -52,6 +53,14 @@ def test_no_entry_for_date_exits_3_and_writes_nothing(tmp_path, art_dir):
 def test_needs_check_entry_exits_3_and_writes_nothing(tmp_path, art_dir):
     p = setup(tmp_path, art_dir, entry(status="needs-check"))
     assert render(p, "2026-11-23") == 3
+    assert not (p["posts"] / "2026-11-23").exists()
+
+
+def test_unapproved_week_exits_3_says_so_and_writes_nothing(tmp_path, art_dir, capsys):
+    p = setup(tmp_path, art_dir, entry(), approved=False)
+    assert render(p, "2026-11-23") == 3
+    err = capsys.readouterr().err
+    assert "2026-11-23" in err and "not approved" in err
     assert not (p["posts"] / "2026-11-23").exists()
 
 

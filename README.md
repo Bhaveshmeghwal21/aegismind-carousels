@@ -25,6 +25,14 @@ tags: #seneca #stoicism #philosophy                             # optional
 note: anything you want to remember   # optional, ignored
 ```
 
+Each ideas file starts with an approval line, above the first entry:
+
+```
+approved: no
+```
+
+The weekly routine writes `approved: no`. Review the week, edit anything you like, then change it to `approved: yes`. **Nothing is posted until you do.** On days that are not approved the daily routine posts nothing and sends you a notification. A single entry can still be held back with `status: needs-check`.
+
 Only `status`, `quote` and `author` are required. Use a quote you can trace to a real work; misattributed quotes are everywhere. Quotes up to about 140 characters fit the image.
 
 ## Going live

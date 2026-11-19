@@ -46,7 +46,10 @@ def _render(args: argparse.Namespace) -> int:
         print(f"{args.date}: no idea found for this date", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
     if not is_postable(idea):
-        print(f"{args.date}: idea is not postable (status {idea.status!r})", file=sys.stderr)
+        if idea.status == "proposed":
+            print(f"{args.date}: week not approved yet (put 'approved: yes' at the top of the ideas file)", file=sys.stderr)
+        else:
+            print(f"{args.date}: idea is not postable (status {idea.status!r})", file=sys.stderr)
         return EXIT_NOTHING_TO_POST
     try:
         paths = render_post(idea, out_dir / args.date, Path(args.art))
