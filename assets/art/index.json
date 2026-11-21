@@ -692,5 +692,35 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-ship": {
+  "title": "Ship driving up a storm wave toward the light",
+  "file": "ink-ship.png",
+  "focus": [
+   0.5,
+   0.45
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-wave": {
+  "title": "Ship cresting a great wave at sunburst",
+  "file": "ink-wave.png",
+  "focus": [
+   0.35,
+   0.35
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
