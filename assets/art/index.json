@@ -662,5 +662,35 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-locomotive": {
+  "title": "Locomotive climbing a steep grade",
+  "file": "ink-locomotive.png",
+  "focus": [
+   0.55,
+   0.5
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-oak": {
+  "title": "Oak splitting a boulder",
+  "file": "ink-oak.png",
+  "focus": [
+   0.45,
+   0.45
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
