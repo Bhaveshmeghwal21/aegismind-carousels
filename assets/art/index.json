@@ -557,5 +557,110 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-forge": {
+  "title": "Blacksmith at the forge",
+  "file": "ink-forge.png",
+  "focus": [
+   0.35,
+   0.4
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-scholar": {
+  "title": "Scholar before a marching army",
+  "file": "ink-scholar.png",
+  "focus": [
+   0.35,
+   0.45
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-plowman": {
+  "title": "Plowman on a stony hillside",
+  "file": "ink-plowman.png",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-sage": {
+  "title": "Old sage on a water buffalo",
+  "file": "ink-sage.png",
+  "focus": [
+   0.55,
+   0.5
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-stairs": {
+  "title": "Climber on the stone stairway",
+  "file": "ink-stairs.png",
+  "focus": [
+   0.45,
+   0.35
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-lighthouse": {
+  "title": "Lighthouse in a storm",
+  "file": "ink-lighthouse.png",
+  "focus": [
+   0.4,
+   0.35
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-athlete": {
+  "title": "Athlete lifting a stone",
+  "file": "ink-athlete.png",
+  "focus": [
+   0.45,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
