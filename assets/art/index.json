@@ -722,5 +722,50 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-hesiod": {
+  "title": "Hesiod, the farmer-poet, with staff and lyre",
+  "file": "ink-hesiod.png",
+  "focus": [
+   0.42,
+   0.25
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-emerson": {
+  "title": "Emerson on an autumn woodland path",
+  "file": "ink-emerson.png",
+  "focus": [
+   0.42,
+   0.25
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-aristotle": {
+  "title": "Aristotle teaching with a scroll at the Lyceum",
+  "file": "ink-aristotle.png",
+  "focus": [
+   0.47,
+   0.25
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
