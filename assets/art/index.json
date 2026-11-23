@@ -797,5 +797,110 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-nietzsche-abyss": {
+  "title": "Nietzsche at the edge of the abyss",
+  "file": "ink-nietzsche-abyss.png",
+  "focus": [
+   0.3,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-musashi-swords": {
+  "title": "Musashi with two crossed swords",
+  "file": "ink-musashi-swords.png",
+  "focus": [
+   0.5,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-marcus": {
+  "title": "Marcus Aurelius in the camp on the Danube",
+  "file": "ink-marcus.png",
+  "focus": [
+   0.45,
+   0.25
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-osho": {
+  "title": "Osho in a bamboo garden",
+  "file": "ink-osho.png",
+  "focus": [
+   0.47,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-nietzsche-star": {
+  "title": "Nietzsche under a single star",
+  "file": "ink-nietzsche-star.png",
+  "focus": [
+   0.45,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-seneca": {
+  "title": "Seneca testing gold in the fire",
+  "file": "ink-seneca.png",
+  "focus": [
+   0.4,
+   0.28
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-musashi-cave": {
+  "title": "Musashi meditating in a mountain cave",
+  "file": "ink-musashi-cave.png",
+  "focus": [
+   0.38,
+   0.28
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
