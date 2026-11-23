@@ -767,5 +767,35 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-leonidas": {
+  "title": "Leonidas in the pass at Thermopylae",
+  "file": "ink-leonidas.png",
+  "focus": [
+   0.52,
+   0.25
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-roosevelt": {
+  "title": "Theodore Roosevelt in the western mountains",
+  "file": "ink-roosevelt.png",
+  "focus": [
+   0.5,
+   0.25
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
