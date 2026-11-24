@@ -902,5 +902,95 @@
   "vignette": null,
   "crop": null,
   "kind": "ink"
+ },
+ "ink-diogenes-alexander": {
+  "title": "Diogenes in the sun, Alexander standing over him",
+  "file": "ink-diogenes-alexander.png",
+  "focus": [
+   0.5,
+   0.5
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-epictetus": {
+  "title": "Epictetus ignoring the men who laugh at him",
+  "file": "ink-epictetus.png",
+  "focus": [
+   0.5,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-nietzsche-snake": {
+  "title": "Nietzsche beside a snake shedding its skin",
+  "file": "ink-nietzsche-snake.png",
+  "focus": [
+   0.5,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-seneca-hourglass": {
+  "title": "Seneca writing beside an hourglass",
+  "file": "ink-seneca-hourglass.png",
+  "focus": [
+   0.5,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-schopenhauer": {
+  "title": "Schopenhauer alone in his study with his poodle",
+  "file": "ink-schopenhauer.png",
+  "focus": [
+   0.45,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
+ },
+ "ink-rousseau": {
+  "title": "Rousseau with a chained fist above Geneva",
+  "file": "ink-rousseau.png",
+  "focus": [
+   0.5,
+   0.3
+  ],
+  "artist": "",
+  "date": "2026",
+  "credit": "Original ink illustration, made with AI",
+  "gamma": 1.0,
+  "vignette": null,
+  "crop": null,
+  "kind": "ink"
  }
 }
